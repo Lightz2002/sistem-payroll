@@ -1,7 +1,17 @@
 import React from 'react';
 import AppLayout from '@/Layouts/AppLayout';
+import { Table } from '@/Components/Table';
+import useTypedPage from '@/Hooks/useTypedPage';
+import { ColumnType, User } from '@/types';
 
-export default function Index() {
+interface Props {
+  employees: User[];
+  columns: ColumnType[];
+}
+
+export default function Index({ employees, columns }: Props) {
+  const page = useTypedPage<User>();
+
   return (
     <AppLayout
       title="Employee List"
@@ -11,7 +21,7 @@ export default function Index() {
         </h2>
       )}
     >
-      <p>tes</p>
+      <Table<User> rowDatas={employees} columnDatas={columns}></Table>
     </AppLayout>
   );
 }

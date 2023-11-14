@@ -102,3 +102,16 @@ export interface TeamInvitation {
   created_at: DateTime;
   updated_at: DateTime;
 }
+
+export interface ColumnType {
+  key: string;
+  label: string;
+  component?: string;
+  // permissions: string[];
+  // description: string;
+}
+
+export interface Collection {
+  id: number;
+  [key: string]: any; // This is an index signature
+}
