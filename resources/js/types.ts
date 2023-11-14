@@ -10,6 +10,11 @@ export interface Team {
   updated_at: DateTime;
 }
 
+export interface Menu {
+  id: number;
+  name: string;
+}
+
 export interface User {
   id: number;
   name: string;
@@ -21,6 +26,9 @@ export interface User {
   email_verified_at: Nullable<DateTime>;
   created_at: DateTime;
   updated_at: DateTime;
+  roles: Role[];
+  menus: string[];
+  // permissions: string[];
 }
 
 export interface Auth {
@@ -80,10 +88,10 @@ export interface JetstreamTeamPermissions {
 }
 
 export interface Role {
-  key: string;
+  id: string;
   name: string;
-  permissions: string[];
-  description: string;
+  // permissions: string[];
+  // description: string;
 }
 
 export interface TeamInvitation {

@@ -2,7 +2,9 @@
 
 namespace App\Http\Middleware;
 
+use App\Models\RoleMenu;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Gate;
 use Inertia\Middleware;
 
 class HandleInertiaRequests extends Middleware
@@ -37,7 +39,19 @@ class HandleInertiaRequests extends Middleware
     public function share(Request $request): array
     {
         return array_merge(parent::share($request), [
-            //
+            // Synchronously...
+            'appName' => config('app.name'),
+
+            // Lazily...
+            'auth.user' => fn () => $request->user()
+                ?   [
+                    'id' => auth()->user()->id,
+                    'name' => auth()->user()->name,
+                    'email' => auth()->user()->email,
+                    'roles' => auth()->user()->roles, // Assuming you have a roles relationship in your User model
+                    'permissions' => Gate::forUser(auth()->user())->abilities(),
+                    'menus' => RoleMenu::getRoleMenus(auth()->user()->roles[0])
+                ] : null,
         ]);
     }
 }

@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/core';
-import { Link, Head } from '@inertiajs/react';
+import { Link, Head, usePage } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useState } from 'react';
 import useRoute from '@/Hooks/useRoute';
@@ -10,7 +10,8 @@ import Dropdown from '@/Components/Dropdown';
 import DropdownLink from '@/Components/DropdownLink';
 import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
-import { Team } from '@/types';
+import { Auth, Team } from '@/types';
+import { upperFirst } from 'lodash';
 
 interface Props {
   title: string;
@@ -24,6 +25,13 @@ export default function AppLayout({
 }: PropsWithChildren<Props>) {
   const page = useTypedPage();
   const route = useRoute();
+  const {
+    props: {
+      auth: { user },
+    },
+  } = page;
+  console.log(user);
+
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
@@ -72,6 +80,15 @@ export default function AppLayout({
                   >
                     Dashboard
                   </NavLink>
+                  {user?.menus.map(menu => (
+                    <NavLink
+                      key={menu}
+                      href={route(menu)}
+                      active={route().current(menu)}
+                    >
+                      {upperFirst(menu)}
+                    </NavLink>
+                  ))}
                 </div>
               </div>
 
