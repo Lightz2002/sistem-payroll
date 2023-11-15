@@ -1,15 +1,14 @@
 import React from 'react';
 import AppLayout from '@/Layouts/AppLayout';
-import { Table } from '@/Components/Table';
+import { Table, TableProps } from '@/Components/Table';
 import useTypedPage from '@/Hooks/useTypedPage';
-import { ColumnType, User } from '@/types';
+import { User } from '@/types';
 
-interface Props {
+interface Props extends TableProps<User> {
   employees: User[];
-  columns: ColumnType[];
 }
 
-export default function Index({ employees, columns }: Props) {
+export default function Index({ dataRoute, employees, columnDatas }: Props) {
   const page = useTypedPage<User>();
 
   return (
@@ -21,7 +20,21 @@ export default function Index({ employees, columns }: Props) {
         </h2>
       )}
     >
-      <Table<User> rowDatas={employees} columnDatas={columns}></Table>
+      <div className="py-12">
+        <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
+          <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-8">
+            <h3 className="mb-4 text-lg font-bold text-gray-700 dark:text-gray-300">
+              Employee List
+            </h3>
+
+            <Table<User>
+              dataRoute={dataRoute}
+              rowDatas={employees}
+              columnDatas={columnDatas}
+            ></Table>
+          </div>
+        </div>
+      </div>
     </AppLayout>
   );
 }

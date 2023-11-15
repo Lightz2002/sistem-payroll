@@ -13,12 +13,21 @@ class EmployeeController extends Controller
      */
     public function index()
     {
-        //
+        $search = request()->search;
+        $sortBy = request()->sortBy;
+        $sortDirection = request()->query('sortDirection');
+
         return Inertia::render("Employees/Index", [
-            'employees' => User::all(),
-            'columns' => [
-                ['key' => 'id', 'label' => 'id', 'component' => 'TestComponent1'],
+            'sortBy' => 'created_at',
+            'sortDirection' => 'asc',
+            'dataRoute' => 'employee',
+            'employees' => User::filter($search)->orderBy($sortBy, 'desc')->get(),
+            'columnDatas' => [
                 ['key' => 'name', 'label' => 'name'],
+                ['key' => 'email', 'label' => 'email'],
+                ['key' => 'roles', 'label' => 'role'],
+                ['key' => 'created_at', 'label' => 'Created At', 'component' => 'HumanDiff'],
+                ['key' => 'action', 'label' => 'action', 'component' => 'EmployeeAction'],
             ]
         ]);
     }

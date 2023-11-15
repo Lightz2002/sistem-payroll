@@ -1,52 +1,86 @@
 import { ColumnType, Collection } from '@/types';
-import React, { Suspense } from 'react';
-import { dynamicComponentMapping } from './DynamicComponents';
+import React, { ChangeEvent, useCallback, useEffect } from 'react';
 import { TableCell } from './TableCell';
-import { upperCase } from 'lodash';
+import { upperFirst } from 'lodash';
+import SearchBar from './SearchBar';
+import { useForm } from '@inertiajs/react';
+import useRoute from '@/Hooks/useRoute';
 
-interface Props<Data extends Collection> {
+export interface TableProps<Data extends Collection> {
   rowDatas: Data[];
   columnDatas: ColumnType[];
+  dataRoute: string;
 }
 
 export const Table = <Data extends Collection>({
   rowDatas,
   columnDatas,
-}: Props<Data>) => {
+  dataRoute,
+}: TableProps<Data>) => {
+  const route = useRoute();
+
+  const form = useForm({
+    search: '',
+  });
+
+  const handleSearchChange = useCallback(
+    (e: ChangeEvent<HTMLInputElement>) => {
+      e.preventDefault();
+      const newSearchValue = e.currentTarget.value;
+
+      // Update the form data immediately
+      form.setData('search', newSearchValue);
+    },
+    [form],
+  );
+
+  useEffect(() => {
+    async function fetchData() {
+      // Use the updated search value when making the get request
+      await form.get(route(dataRoute), {
+        data: {
+          search: form.data.search,
+        },
+        errorBag: 'search',
+        preserveScroll: true,
+        preserveState: true,
+      });
+    }
+    fetchData();
+  }, [form.data.search]);
+
   return (
-    <table className="text-white">
-      <thead>
-        <tr>
-          {columnDatas.map(column => (
-            <th>{upperCase(column.key)}</th>
-          ))}
-        </tr>
-      </thead>
-      <tbody>
-        {rowDatas.map(row => (
-          <tr key={row.id}>
-            {columnDatas.map(column => (
-              <td key={column.key}>
-                {column.component ? (
-                  <Suspense fallback={<div>Loading...</div>}>
-                    {dynamicComponentMapping[column.component] &&
-                      React.createElement(
-                        dynamicComponentMapping[column.component],
-                        {
-                          id: row.id,
-                          value: row[column.key as keyof Data],
-                          row,
-                        },
-                      )}
-                  </Suspense>
-                ) : (
-                  <TableCell row={row}>{row[column.key]}</TableCell>
-                )}
-              </td>
+    <div className="table-full-container">
+      {/* Searchbar */}
+      <SearchBar value={form.data.search} onChange={handleSearchChange} />
+
+      <div className="mb-4  overflow-hidden rounded-lg shadow-md">
+        <table className="table-auto w-full  text-left  border-slate-200">
+          <thead>
+            <tr>
+              {columnDatas.map(column => (
+                <th
+                  key={column.key}
+                  className="p-3 border-b  border-slate-200 bg-slate-200 text-slate-500 cursor-pointer"
+                >
+                  {upperFirst(column.label)}
+                </th>
+              ))}
+            </tr>
+          </thead>
+          <tbody>
+            {rowDatas.map(row => (
+              <tr key={row.id}>
+                {columnDatas.map(column => (
+                  <TableCell key={column.key} row={row} column={column}>
+                    {row[column.key]}
+                  </TableCell>
+                ))}
+              </tr>
             ))}
-          </tr>
-        ))}
-      </tbody>
-    </table>
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 };
