@@ -8,7 +8,13 @@ interface Props extends TableProps<User> {
   employees: User[];
 }
 
-export default function Index({ dataRoute, employees, columnDatas }: Props) {
+export default function Index({
+  dataRoute,
+  employees,
+  columnDatas,
+  sortBy,
+  sortDirection,
+}: Props) {
   const page = useTypedPage<User>();
 
   return (
@@ -28,6 +34,8 @@ export default function Index({ dataRoute, employees, columnDatas }: Props) {
             </h3>
 
             <Table<User>
+              sortBy={sortBy}
+              sortDirection={sortDirection}
               dataRoute={dataRoute}
               rowDatas={employees}
               columnDatas={columnDatas}
