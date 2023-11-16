@@ -107,11 +107,33 @@ export interface ColumnType {
   key: string;
   label: string;
   component?: string;
-  // permissions: string[];
-  // description: string;
 }
 
 export interface Collection {
   id: number;
   [key: string]: any; // This is an index signature
 }
+
+export interface PaginationLink {
+  url: string | null;
+  label: string;
+  active: boolean;
+}
+
+export interface PaginationType<Data extends Collection> {
+  current_page: number;
+  data: Data[];
+  first_page_url: string;
+  from: number;
+  last_page: 1;
+  last_page_url: string;
+  links: PaginationLink[];
+  next_page_url: string | null;
+  path: string;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+}
+
+// export type OpenModalFormHandle = () => void;

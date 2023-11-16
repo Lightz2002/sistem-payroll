@@ -1,21 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Table, TableProps } from '@/Components/Table';
 import useTypedPage from '@/Hooks/useTypedPage';
-import { User } from '@/types';
+import { PaginationType, User } from '@/types';
+import CreateEmployee from './CreateEmployee';
 
 interface Props extends TableProps<User> {
-  employees: User[];
+  datas: PaginationType<User>;
 }
 
 export default function Index({
   dataRoute,
-  employees,
+  datas,
   columnDatas,
   sortBy,
   sortDirection,
+  page,
 }: Props) {
-  const page = useTypedPage<User>();
+  // const page = useTypedPage<User>();
+
+  const [openCreateModal, setOpenCreateModal] = useState(false);
 
   return (
     <AppLayout
@@ -26,6 +30,10 @@ export default function Index({
         </h2>
       )}
     >
+      <CreateEmployee
+        isOpenModal={openCreateModal}
+        setIsOpenModal={setOpenCreateModal}
+      />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-8">
@@ -37,8 +45,10 @@ export default function Index({
               sortBy={sortBy}
               sortDirection={sortDirection}
               dataRoute={dataRoute}
-              rowDatas={employees}
+              rowDatas={datas}
               columnDatas={columnDatas}
+              page={page}
+              openCreateForm={setOpenCreateModal}
             ></Table>
           </div>
         </div>

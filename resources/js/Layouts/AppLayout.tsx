@@ -30,8 +30,6 @@ export default function AppLayout({
       auth: { user },
     },
   } = page;
-  console.log(user);
-
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 

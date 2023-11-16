@@ -1,17 +1,23 @@
-import { ColumnType, Collection } from '@/types';
+import { ColumnType, Collection, PaginationType } from '@/types';
 import React, { ChangeEvent, MouseEvent, useCallback, useEffect } from 'react';
 import { TableCell } from './TableCell';
 import { upperFirst } from 'lodash';
 import SearchBar from './SearchBar';
 import { useForm } from '@inertiajs/react';
 import useRoute from '@/Hooks/useRoute';
+import Pagination from './Pagination';
+import PrimaryButton from './PrimaryButton';
+
+export type HandlePageFunction = (newPage: number) => void;
 
 export interface TableProps<Data extends Collection> {
-  rowDatas: Data[];
+  rowDatas: PaginationType<Data>;
   columnDatas: ColumnType[];
   dataRoute: string;
   sortBy: string;
   sortDirection: string;
+  page: number;
+  openCreateForm: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 export const Table = <Data extends Collection>({
@@ -20,6 +26,8 @@ export const Table = <Data extends Collection>({
   dataRoute,
   sortBy,
   sortDirection,
+  page,
+  openCreateForm,
 }: TableProps<Data>) => {
   const route = useRoute();
 
@@ -27,6 +35,7 @@ export const Table = <Data extends Collection>({
     search: '',
     sortBy: sortBy,
     sortDirection: sortDirection,
+    page: page,
   });
 
   const handleSearch = useCallback(
@@ -56,6 +65,13 @@ export const Table = <Data extends Collection>({
     }
   };
 
+  const handlePage = useCallback(
+    (newPage: number) => {
+      form.setData('page', newPage);
+    },
+    [form.data.page],
+  );
+
   useEffect(() => {
     async function fetchData() {
       // Use the updated search value when making the get request
@@ -64,6 +80,7 @@ export const Table = <Data extends Collection>({
           search: form.data.search,
           sortBy: form.data.sortBy,
           sortDirection: form.data.sortDirection,
+          page: form.data.page,
         },
         errorBag: 'search',
         preserveScroll: true,
@@ -71,7 +88,12 @@ export const Table = <Data extends Collection>({
       });
     }
     fetchData();
-  }, [form.data.search, form.data.sortBy, form.data.sortDirection]);
+  }, [
+    form.data.search,
+    form.data.sortBy,
+    form.data.sortDirection,
+    form.data.page,
+  ]);
 
   const renderSortIcon = (column: ColumnType) => {
     if (column.key !== form.data.sortBy) return <></>;
@@ -107,7 +129,18 @@ export const Table = <Data extends Collection>({
   return (
     <div className="table-full-container">
       {/* Searchbar */}
-      <SearchBar value={form.data.search} onChange={handleSearch} />
+
+      <div className="mb-4 flex items-baseline justify-evenly">
+        <SearchBar value={form.data.search} onChange={handleSearch} />
+
+        <PrimaryButton
+          type="button"
+          className={`ml-auto`}
+          onClick={() => openCreateForm(true)}
+        >
+          Create
+        </PrimaryButton>
+      </div>
 
       <div className="mb-4  overflow-hidden rounded-lg shadow-md">
         <table className="table-auto w-full  text-left  border-slate-200">
@@ -126,7 +159,7 @@ export const Table = <Data extends Collection>({
             </tr>
           </thead>
           <tbody>
-            {rowDatas.map(row => (
+            {rowDatas.data?.map(row => (
               <tr key={row.id}>
                 {columnDatas.map(column => (
                   <TableCell key={column.key} row={row} column={column}>
@@ -138,6 +171,13 @@ export const Table = <Data extends Collection>({
           </tbody>
         </table>
       </div>
+
+      {/* pagination */}
+      <Pagination
+        pagination={rowDatas}
+        handlePageClick={handlePage}
+        page={form.data.page}
+      />
     </div>
   );
 };
