@@ -26,7 +26,7 @@ export interface User {
   email_verified_at: Nullable<DateTime>;
   created_at: DateTime;
   updated_at: DateTime;
-  roles: Role[];
+  roles: string;
   menus: string[];
   // permissions: string[];
 }

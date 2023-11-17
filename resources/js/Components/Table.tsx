@@ -13,6 +13,7 @@ export type HandlePageFunction = (newPage: number) => void;
 export interface TableProps<Data extends Collection> {
   rowDatas: PaginationType<Data>;
   columnDatas: ColumnType[];
+  search: string;
   dataRoute: string;
   sortBy: string;
   sortDirection: string;
@@ -24,6 +25,7 @@ export const Table = <Data extends Collection>({
   rowDatas,
   columnDatas,
   dataRoute,
+  search,
   sortBy,
   sortDirection,
   page,
@@ -32,7 +34,7 @@ export const Table = <Data extends Collection>({
   const route = useRoute();
 
   const form = useForm({
-    search: '',
+    search: search || '',
     sortBy: sortBy,
     sortDirection: sortDirection,
     page: page,
@@ -45,6 +47,8 @@ export const Table = <Data extends Collection>({
 
       // Update the form data immediately
       form.setData('search', newSearchValue);
+
+      // reset page to 1
     },
     [form],
   );

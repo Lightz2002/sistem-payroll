@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\EmployeeController;
+use App\Http\Controllers\RoleController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -25,6 +26,8 @@ Route::get('/', function () {
     ]);
 });
 
+
+
 Route::middleware([
     'auth:sanctum',
     config('jetstream.auth_session'),
@@ -35,6 +38,11 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employee');
+
+    Route::post('/employees', [EmployeeController::class, 'store'])->name('employee.store');
+
+    Route::resource('roles', RoleController::class);
+
 
     Route::get('/salary', function () {
         return Inertia::render('salary');

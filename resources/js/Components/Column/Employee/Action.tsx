@@ -1,19 +1,31 @@
+import Alert from '@/Components/Alert';
 import useRoute from '@/Hooks/useRoute';
+import EditEmployee from '@/Pages/Employees/EditEmployee';
 import { Link } from '@inertiajs/react';
-import React from 'react';
+import React, { useState } from 'react';
 
 interface Props {
   id: number;
+  row: any;
+  value: number | string;
 }
 
-const Action = ({ id }: Props) => {
+const Action = ({ id, row, value }: Props) => {
   const route = useRoute();
+  const [openEditModal, setOpenEditModal] = useState(false);
+  const [isEditSuccess, setIsEditSuccess] = useState(false);
+
+  function handleSuccess() {
+    setIsEditSuccess(true);
+    setOpenEditModal(false);
+  }
+
   return (
     <>
-      <div className="inline-flex align-items-center">
-        {/* <Link
-          href={route('users.edit', { user: id })}
-          className="inline-flex me-4 border bg-blue-400 text-white px-4 py-2 text-xs rounded-md"
+      <div className="inline-flex align-items-center ">
+        <button
+          onClick={() => setOpenEditModal(true)}
+          className="inline-flex me-4 border bg-cyan-400 text-white px-4 py-2 text-xs rounded-md hover:bg-cyan-600"
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -30,7 +42,7 @@ const Action = ({ id }: Props) => {
             />
           </svg>
           <span>Edit</span>
-        </Link> */}
+        </button>
         <button
           data-user-id={id}
           className="edit-user-button inline-flex me-4 border bg-red-400 text-white px-4 py-2 text-xs rounded-md"
@@ -52,6 +64,15 @@ const Action = ({ id }: Props) => {
           <span>Delete</span>
         </button>
       </div>
+
+      <Alert on={isEditSuccess}>Employee Edited Successfully</Alert>
+
+      <EditEmployee
+        data={row}
+        isOpenModal={openEditModal}
+        setIsOpenModal={setOpenEditModal}
+        handleSuccess={handleSuccess}
+      />
     </>
   );
 };

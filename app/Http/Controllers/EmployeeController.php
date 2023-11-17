@@ -2,12 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\CreateEmployeeRequest;
 use App\Models\User;
+use App\Services\RoleService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Redirect;
 use Inertia\Inertia;
+use Spatie\Permission\Models\Role;
 
 class EmployeeController extends Controller
 {
+    protected $roleService;
+
+    public function __construct()
+    {
+        $this->roleService = new RoleService();
+    }
     /**
      * Display a listing of the resource.
      */
@@ -16,19 +27,23 @@ class EmployeeController extends Controller
         $search = request()->search;
         $sortBy = request()->sortBy ?? 'created_at';
         $sortDirection = request()->sortDirection ?? 'asc';
+        $page = ((is_nan(request()->page) || !request()->page) ? 1 : request()->page);
 
         return Inertia::render("Employees/Index", [
+            'search' => $search,
             'sortBy' => $sortBy,
             'sortDirection' => $sortDirection,
+            'page' => $page,
             'dataRoute' => 'employee',
-            'employees' => User::filter($search)->orderBy($sortBy, $sortDirection)->get(),
+            'datas' => User::filter($search)->orderBy($sortBy, $sortDirection)->paginate(5),
             'columnDatas' => [
                 ['key' => 'name', 'label' => 'name'],
                 ['key' => 'email', 'label' => 'email'],
                 ['key' => 'roles', 'label' => 'role'],
                 ['key' => 'created_at', 'label' => 'Created At', 'component' => 'HumanDiff'],
                 ['key' => 'action', 'label' => 'action', 'component' => 'EmployeeAction'],
-            ]
+            ],
+            'roleAutocomplete' => $this->roleService->getAll()
         ]);
     }
 
@@ -37,15 +52,28 @@ class EmployeeController extends Controller
      */
     public function create()
     {
-        //
     }
 
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function store(CreateEmployeeRequest $request)
     {
         //
+        $request->validated();
+
+        $user = User::create([
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => Hash::make($request->password),
+        ]);
+
+        $role = Role::firstWhere('id', $request->role);
+        $user->assignRole($role->name);
+        $user->save();
+
+
+        return Redirect::to('/employees');
     }
 
     /**
@@ -78,5 +106,14 @@ class EmployeeController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    /**
+     * Display a listing of the resource.
+     */
+    public function getRoleByUser(User $user)
+    {
+        $userRole = User::filter('')->where('id', $user->id)->get();
+        return response()->json($userRole);
     }
 }

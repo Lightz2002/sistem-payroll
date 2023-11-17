@@ -4,22 +4,35 @@ import { Table, TableProps } from '@/Components/Table';
 import useTypedPage from '@/Hooks/useTypedPage';
 import { PaginationType, User } from '@/types';
 import CreateEmployee from './CreateEmployee';
+import { AutocompleteType } from '@/Components/Autocomplete';
+import Alert from '@/Components/Alert';
 
 interface Props extends TableProps<User> {
   datas: PaginationType<User>;
+  roleAutocomplete: AutocompleteType[];
 }
 
+export type handleSuccess = () => void;
+
 export default function Index({
+  search,
   dataRoute,
   datas,
   columnDatas,
   sortBy,
   sortDirection,
   page,
+  roleAutocomplete,
 }: Props) {
   // const page = useTypedPage<User>();
 
   const [openCreateModal, setOpenCreateModal] = useState(false);
+  const [isSuccess, setIsSuccess] = useState(false);
+
+  const handleSuccess = () => {
+    setIsSuccess(true);
+    setOpenCreateModal(false);
+  };
 
   return (
     <AppLayout
@@ -33,6 +46,8 @@ export default function Index({
       <CreateEmployee
         isOpenModal={openCreateModal}
         setIsOpenModal={setOpenCreateModal}
+        data={roleAutocomplete}
+        handleSuccess={handleSuccess}
       />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
@@ -42,6 +57,7 @@ export default function Index({
             </h3>
 
             <Table<User>
+              search={search}
               sortBy={sortBy}
               sortDirection={sortDirection}
               dataRoute={dataRoute}
@@ -53,6 +69,8 @@ export default function Index({
           </div>
         </div>
       </div>
+
+      <Alert on={isSuccess}>Employee Created Successfully</Alert>
     </AppLayout>
   );
 }

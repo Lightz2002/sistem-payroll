@@ -21,14 +21,11 @@ const Pagination = <Data extends Collection>({
     if (link.label.includes('Previous')) {
       if (!link.url) return;
       page = page - 1;
-      console.log(page);
     } else if (link.label.includes('Next')) {
       if (!link.url) return;
       page = page + 1;
-      console.log(page);
     } else {
       page = +link.label;
-      console.log(+link.label);
     }
 
     handlePageClick(page);
@@ -37,21 +34,21 @@ const Pagination = <Data extends Collection>({
 
   const renderPageNumbers = () => {
     return pagination.links.map(page => {
+      const enabledPageLinkClass = page.url
+        ? 'bg-white'
+        : 'bg-gray-400 pointer-events-none cursor-not-allowed';
+      const activePageClass = page.active
+        ? 'active bg-indigo-700 text-white'
+        : enabledPageLinkClass;
+      const clickedPageClass = isClicked
+        ? 'focus:outline-none focus:ring focus:border-indigo-300 active:bg-indigo-700'
+        : '';
+
       return (
         <li
           onClick={e => handleClick(e, page)}
           key={page.label}
-          className={`bg-white py-2 px-4 border border-indigo-400 hover:bg-indigo-400 hover:text-white hover:cursor-pointer ${
-            page.active ? 'active bg-indigo-700 text-white' : ''
-          } ${
-            isClicked
-              ? 'focus:outline-none focus:ring focus:border-indigo-300 active:bg-indigo-700'
-              : ''
-          } ${
-            page.url
-              ? ''
-              : 'bg-gray-400  pointer-events-none cursor-not-allowed '
-          }`}
+          className={`py-2 px-4 border border-indigo-400 hover:bg-indigo-400 hover:text-white hover:cursor-pointer ${activePageClass} ${clickedPageClass}`}
         >
           {
             new DOMParser().parseFromString(page.label, 'text/html').body
