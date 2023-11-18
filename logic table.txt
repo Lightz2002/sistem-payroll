@@ -1,0 +1,22 @@
+table component
+
+
+/* utk garis besar */
+1. kt kasih data, dan column dr be -> di table render sesuai logic dibwh
+2. utk header -> kt loop columnnya , render data labelnya
+3. utk data
+ - kt loop datanya
+  -tmpilin row
+  -per row, kt loop kolom utk tahu kolom apa aj mau dimnclin
+    - tmplin columnya
+
+
+/* utk sort */
+1. kasih event di fe utk cellnya
+2. ketika tekan, send form request ke list dgn param sort-by dan sort direction
+3. be query ke data sesuai sort yg dikasih
+4. data yg direturn render lagi
+
+- cara implementasikan sort ?
+- cara implementasikan pagination ?
+- cara implementasikan filter dan search ?

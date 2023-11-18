@@ -1,5 +1,5 @@
 import { router } from '@inertiajs/core';
-import { Link, Head, usePage } from '@inertiajs/react';
+import { Link, Head } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useState } from 'react';
 import useRoute from '@/Hooks/useRoute';
@@ -30,8 +30,6 @@ export default function AppLayout({
       auth: { user },
     },
   } = page;
-  console.log(user);
-
   const [showingNavigationDropdown, setShowingNavigationDropdown] =
     useState(false);
 
