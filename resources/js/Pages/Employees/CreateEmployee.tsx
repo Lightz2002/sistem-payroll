@@ -148,7 +148,9 @@ const CreateEmployee = ({
           </div>
         </DialogModal.Content>
         <DialogModal.Footer>
-          <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
+          <SecondaryButton type="button" onClick={closeModal}>
+            Cancel
+          </SecondaryButton>
 
           <PrimaryButton
             type="submit"

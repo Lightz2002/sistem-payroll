@@ -40,8 +40,12 @@ export default function Autocomplete({
 
     setFilteredSuggestions(filtered);
 
+    const selectedRole = suggestions.filter(
+      suggestion => suggestion.value.toLowerCase() === inputValue.toLowerCase(),
+    );
+
     onAutocompleteChange(
-      filtered.length > 0 ? filtered[0].id : Number.MIN_VALUE,
+      selectedRole.length > 0 ? filtered[0].id : Number.MIN_VALUE,
       e.target.value,
     );
   };

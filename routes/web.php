@@ -38,8 +38,8 @@ Route::middleware([
     })->name('dashboard');
 
     Route::get('/employees', [EmployeeController::class, 'index'])->name('employee');
-
     Route::post('/employees', [EmployeeController::class, 'store'])->name('employee.store');
+    Route::put('/employees/{employee}', [EmployeeController::class, 'update'])->name('employee.update');
 
     Route::resource('roles', RoleController::class);
 

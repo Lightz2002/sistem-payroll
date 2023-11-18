@@ -41,7 +41,6 @@ const EditEmployee = ({
       try {
         const res = await axios.get('/roles');
         setRoles(res.data);
-        setIsLoading(false);
       } catch (e) {
         console.log(e);
       }
@@ -50,17 +49,24 @@ const EditEmployee = ({
     if (isOpenModal) getInitialData();
   }, [isOpenModal]);
 
+  useEffect(() => {
+    if (roles) {
+      const userRole = roles.filter(role => role.value === data.roles);
+      form.setData('role', userRole[0]?.id);
+      setIsLoading(false);
+    }
+  }, [roles]);
+
   function closeModal() {
     setIsOpenModal(false);
   }
 
   const route = useRoute();
-  const userRole = roles.filter(role => role.value === data.roles);
 
   const form = useForm({
     name: data.name,
     email: data.email,
-    role: userRole[0]?.id || Number.MIN_SAFE_INTEGER,
+    role: Number.MIN_SAFE_INTEGER,
     processing: false,
     terms: false,
   });
@@ -69,10 +75,10 @@ const EditEmployee = ({
     form.setData('role', id);
   };
 
-  function createEmployee(e: React.FormEvent) {
+  function editEmployee(e: React.FormEvent) {
     e.preventDefault();
 
-    form.post(route('employee.update'), {
+    form.put(route('employee.update', { employee: data.id }), {
       onError: e => console.log(e),
       onSuccess: () => {
         handleSuccess();
@@ -85,7 +91,7 @@ const EditEmployee = ({
       {isLoading ? (
         <div>...Loading</div>
       ) : (
-        <form onSubmit={createEmployee}>
+        <form onSubmit={editEmployee}>
           <DialogModal.Content title={title}>
             {content}
 
@@ -125,14 +131,16 @@ const EditEmployee = ({
                 suggestions={roles}
                 selectedId={form.data.role}
                 onAutocompleteChange={handleAutocompleteChange}
-                defaultInputValue={roles[0].value}
+                defaultInputValue={data.roles}
               />
 
               <InputError message={form.errors.role} className="mt-2" />
             </div>
           </DialogModal.Content>
           <DialogModal.Footer>
-            <SecondaryButton onClick={closeModal}>Cancel</SecondaryButton>
+            <SecondaryButton type="button" onClick={closeModal}>
+              Cancel
+            </SecondaryButton>
 
             <PrimaryButton
               type="submit"

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateEmployeeRequest;
+use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\User;
 use App\Services\RoleService;
 use Illuminate\Http\Request;
@@ -95,9 +96,18 @@ class EmployeeController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, string $id)
+    public function update(UpdateEmployeeRequest $request, User $employee)
     {
-        //
+        $request->validated();
+
+        $employee->name = $request->name;
+        $employee->email = $request->email;
+
+        $employee->assignRole($request->role);
+
+        $employee->save();
+
+        return redirect()->route('employee');
     }
 
     /**
