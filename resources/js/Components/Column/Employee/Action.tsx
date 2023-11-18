@@ -65,7 +65,9 @@ const Action = ({ id, row, value }: Props) => {
         </button>
       </div>
 
-      <Alert on={isEditSuccess}>Employee Edited Successfully</Alert>
+      <Alert on={isEditSuccess} setOn={setIsEditSuccess}>
+        Employee Edited Successfully
+      </Alert>
 
       <EditEmployee
         data={row}

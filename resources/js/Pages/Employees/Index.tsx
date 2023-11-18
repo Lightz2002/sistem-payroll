@@ -70,7 +70,9 @@ export default function Index({
         </div>
       </div>
 
-      <Alert on={isSuccess}>Employee Created Successfully</Alert>
+      <Alert on={isSuccess} setOn={setIsSuccess}>
+        Employee Created Successfully
+      </Alert>
     </AppLayout>
   );
 }

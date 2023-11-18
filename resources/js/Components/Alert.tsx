@@ -1,14 +1,16 @@
 import { Transition } from '@headlessui/react';
-import React, { PropsWithChildren, useEffect } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 
 interface Props {
   on: boolean;
+  setOn: React.Dispatch<React.SetStateAction<boolean>>;
   type?: 'success' | 'info' | 'error' | 'warning';
   className?: string;
 }
 
 export default function Alert({
   on,
+  setOn,
   className,
   type,
   children,
@@ -99,14 +101,12 @@ export default function Alert({
   }
 
   useEffect(() => {
-    const alertElement = document.querySelector('.alert');
-
-    if (alertElement) {
+    if (on) {
       setTimeout(() => {
-        alertElement.classList.add('hidden');
+        setOn(false);
       }, 2000);
     }
-  }, []);
+  }, [on]);
 
   return (
     <Transition
@@ -114,12 +114,12 @@ export default function Alert({
       enter="transition-opacity duration-75"
       enterFrom="opacity-0"
       leave="transition ease-in duration-1000"
-      leave-from-class="opacity-100"
+      leaveFrom="opacity-100"
       leaveTo="opacity-0"
-      className={`ml-auto fixed right-0 top-0`}
+      className={`alert ml-auto fixed right-0 top-0`}
     >
       <div
-        className={`alert py-2 flex items-center text-sm px-8  ${color} ${bgColor} ${className}`}
+        className={`py-2 flex items-center text-sm px-8  ${color} ${bgColor} ${className}`}
       >
         {icon}
         {children}

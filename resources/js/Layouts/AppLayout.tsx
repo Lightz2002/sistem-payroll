@@ -1,7 +1,7 @@
 import { router } from '@inertiajs/core';
 import { Link, Head } from '@inertiajs/react';
 import classNames from 'classnames';
-import React, { PropsWithChildren, useState } from 'react';
+import React, { PropsWithChildren, useEffect, useState } from 'react';
 import useRoute from '@/Hooks/useRoute';
 import useTypedPage from '@/Hooks/useTypedPage';
 import ApplicationMark from '@/Components/ApplicationMark';
@@ -50,6 +50,17 @@ export default function AppLayout({
     e.preventDefault();
     router.post(route('logout'));
   }
+
+  useEffect(() => {
+    const alertElement = document.querySelector('.alert');
+
+    if (alertElement) {
+      console.log(alertElement);
+      setTimeout(() => {
+        alertElement.classList.add('hidden');
+      }, 1000);
+    }
+  }, []);
 
   return (
     <div>
