@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\SalaryController;
 use Illuminate\Foundation\Application;
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
@@ -44,7 +45,15 @@ Route::middleware([
     Route::resource('roles', RoleController::class);
 
 
-    Route::get('/salary', function () {
-        return Inertia::render('salary');
-    })->name('salary');
+
+    Route::get('/salary', [SalaryController::class, 'index'])->name('salary');
+    Route::get('/salary/{salary}', [SalaryController::class, 'show'])->name('salary.show');
+    Route::post('/salary', [SalaryController::class, 'store'])->name('salary.store');
+
+    Route::post('/salary_bonus', [SalaryController::class, 'createSalaryBonus'])->name('salary_bonus.store');
+    Route::post('/salary_deduction', [SalaryController::class, 'createSalaryDeduction'])->name('salary_deduction.store');
+    Route::put('/salary_bonus/{salaryBonus}', [SalaryController::class, 'updateSalaryBonus'])->name('salary_bonus.update');
+    Route::put('/salaryDeduction/{salaryDeduction}', [SalaryController::class, 'updateSalaryDeduction'])->name('salary_deduction.update');
+    Route::delete('/salary_bonus/{salaryBonus}', [SalaryController::class, 'deleteSalaryBonus'])->name('salary_bonus.destroy');
+    Route::delete('/salaryDeduction/{salaryDeduction}', [SalaryController::class, 'deleteSalaryDeduction'])->name('salary_deduction.destroy');
 });

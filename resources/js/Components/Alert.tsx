@@ -3,12 +3,14 @@ import React, { PropsWithChildren, useEffect } from 'react';
 
 interface Props {
   on: boolean;
+  setOn: React.Dispatch<React.SetStateAction<boolean>>;
   type?: 'success' | 'info' | 'error' | 'warning';
   className?: string;
 }
 
 export default function Alert({
   on,
+  setOn,
   className,
   type,
   children,
@@ -54,8 +56,8 @@ export default function Alert({
       );
       break;
     case 'error':
-      bgColor = 'text-red-100';
-      color = 'bg-red-800';
+      bgColor = 'bg-red-100';
+      color = 'text-red-800';
       icon = (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -74,8 +76,8 @@ export default function Alert({
       );
       break;
     case 'warning':
-      bgColor = 'orange';
-      color = 'orange';
+      bgColor = 'bg-orange-100';
+      color = 'text-orange-800';
       icon = (
         <svg
           xmlns="http://www.w3.org/2000/svg"
@@ -99,14 +101,20 @@ export default function Alert({
   }
 
   useEffect(() => {
-    const alertElement = document.querySelector('.alert');
+    console.log('useEffect triggered:', on);
 
-    if (alertElement) {
+    if (on) {
+      console.log('Setting timeout to hide alert');
       setTimeout(() => {
-        alertElement.classList.add('hidden');
+        console.log('Hiding alert now');
+        setOn(false);
       }, 2000);
     }
-  }, []);
+
+    return () => {
+      console.log('unmounted');
+    };
+  }, [on]);
 
   return (
     <Transition
@@ -114,7 +122,7 @@ export default function Alert({
       enter="transition-opacity duration-75"
       enterFrom="opacity-0"
       leave="transition ease-in duration-1000"
-      leave-from-class="opacity-100"
+      leaveFrom="opacity-100"
       leaveTo="opacity-0"
       className={`ml-auto fixed right-0 top-0`}
     >

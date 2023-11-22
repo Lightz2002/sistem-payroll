@@ -1,3 +1,5 @@
+import { FormDataConvertible } from '@inertiajs/core';
+
 type DateTime = string;
 
 export type Nullable<T> = T | null;
@@ -134,6 +136,29 @@ export interface PaginationType<Data extends Collection> {
   prev_page_url: string | null;
   to: number;
   total: number;
+}
+
+export interface TableForm<Data = undefined> {
+  search: string;
+  sortBy: string;
+  sortDirection: string;
+  page: number;
+  filters?: Data;
+}
+
+export interface Salary extends Collection {
+  date: string;
+  employee: string;
+  total_amount: number;
+  salary_per_day: number;
+  total_salary_bonus: number;
+  total_salary_deduction: number;
+  salary_deductions: PaginationType<SalaryDeductionOrBonus>;
+  salary_bonus: PaginationType<SalaryDeductionOrBonus>;
+}
+export interface SalaryDeductionOrBonus extends Collection {
+  name: string;
+  amount: number;
 }
 
 // export type OpenModalFormHandle = () => void;

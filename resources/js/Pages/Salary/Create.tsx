@@ -21,9 +21,9 @@ interface Props {
   handleSuccess: handleSuccess;
 }
 
-const CreateEmployee = ({
-  title = 'Create Employee',
-  content = 'For managing employee and their salary, create here',
+const Create = ({
+  title = 'Create Salary',
+  content = 'For tracking record of employee monthly salary',
   button = 'Save',
   isOpenModal,
   setIsOpenModal,
@@ -38,25 +38,22 @@ const CreateEmployee = ({
   const route = useRoute();
 
   const form = useForm({
-    name: '',
-    email: '',
-    password: '',
-    password_confirmation: '',
-    role: data[0]?.id || Number.MIN_SAFE_INTEGER,
+    date: '',
+    salary_per_day: 0,
+    employee: data[0]?.id || Number.MIN_SAFE_INTEGER,
     processing: false,
     terms: false,
   });
 
   const handleAutocompleteChange = (id: number, value: string) => {
-    form.setData('role', id);
+    form.setData('employee', id);
   };
 
-  function createEmployee(e: React.FormEvent) {
+  function createSalary(e: React.FormEvent) {
     e.preventDefault();
     const { processing, ...formData } = form; // exclude 'error' and 'processing' properties
 
-    form.post(route('employee.store'), {
-      onFinish: () => form.reset('password', 'password_confirmation'),
+    form.post(route('salary.store'), {
       onError: e => console.log(e),
       onSuccess: () => {
         handleSuccess();
@@ -66,85 +63,51 @@ const CreateEmployee = ({
 
   return (
     <DialogModal isOpen={isOpenModal} onClose={closeModal}>
-      <form onSubmit={createEmployee}>
+      <form onSubmit={createSalary}>
         <DialogModal.Content title={title}>
           {content}
 
           <div className="mt-4">
-            <InputLabel htmlFor="name">Name</InputLabel>
+            <InputLabel htmlFor="date">Date</InputLabel>
+
+            <TextInput
+              type="month"
+              className="mt-1 block w-3/4 text-white"
+              value={form.data.date}
+              onChange={e => form.setData('date', e.currentTarget.value)}
+            />
+
+            <InputError message={form.errors.date} className="mt-2" />
+          </div>
+
+          <div className="mt-4">
+            <InputLabel htmlFor="salary_per_day">Salary Per Day</InputLabel>
 
             <TextInput
               type="text"
               className="mt-1 block w-3/4"
-              placeholder="name"
-              value={form.data.name}
-              onChange={e => form.setData('name', e.currentTarget.value)}
-            />
-
-            <InputError message={form.errors.name} className="mt-2" />
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="email">Email</InputLabel>
-
-            <TextInput
-              type="text"
-              className="mt-1 block w-3/4"
-              placeholder="email"
-              value={form.data.email}
-              onChange={e => form.setData('email', e.currentTarget.value)}
-            />
-
-            <InputError message={form.errors.email} className="mt-2" />
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="password">Password</InputLabel>
-
-            <TextInput
-              type="password"
-              className="mt-1 block w-3/4"
-              placeholder="password"
-              value={form.data.password}
-              onChange={e => form.setData('password', e.currentTarget.value)}
-            />
-
-            <InputError message={form.errors.password} className="mt-2" />
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="password_confirmation">
-              Confirm Password
-            </InputLabel>
-            <TextInput
-              id="password_confirmation"
-              type="password"
-              className="mt-1 block w-3/4"
-              value={form.data.password_confirmation}
+              placeholder="salary_per_day"
+              value={form.data.salary_per_day}
               onChange={e =>
-                form.setData('password_confirmation', e.currentTarget.value)
+                form.setData('salary_per_day', +e.currentTarget.value)
               }
-              required
-              autoComplete="new-password"
             />
-            <InputError
-              className="mt-2"
-              message={form.errors.password_confirmation}
-            />
+
+            <InputError message={form.errors.salary_per_day} className="mt-2" />
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="role">Role</InputLabel>
+            <InputLabel htmlFor="employee">Employee</InputLabel>
 
             <Autocomplete
-              placeholder="Type a role name"
+              placeholder="Type a employee name"
               suggestions={data}
-              selectedId={form.data.role}
+              selectedId={form.data.employee}
               onAutocompleteChange={handleAutocompleteChange}
               defaultInputValue={data[0].value}
             />
 
-            <InputError message={form.errors.role} className="mt-2" />
+            <InputError message={form.errors.employee} className="mt-2" />
           </div>
         </DialogModal.Content>
         <DialogModal.Footer>
@@ -157,8 +120,6 @@ const CreateEmployee = ({
             className={classNames('ml-2', {
               'opacity-25': form.data.processing,
             })}
-            // onClick={createEmployee}
-            // disabled={form.data.processing}
           >
             {button}
           </PrimaryButton>
@@ -168,4 +129,4 @@ const CreateEmployee = ({
   );
 };
 
-export default CreateEmployee;
+export default Create;

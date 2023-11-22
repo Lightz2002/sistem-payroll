@@ -1,4 +1,4 @@
-import { ColumnType, Collection, PaginationType } from '@/types';
+import { ColumnType, Collection, PaginationType, TableForm } from '@/types';
 import React, { ChangeEvent, MouseEvent, useCallback, useEffect } from 'react';
 import { TableCell } from './TableCell';
 import { upperFirst } from 'lodash';
@@ -7,38 +7,38 @@ import { useForm } from '@inertiajs/react';
 import useRoute from '@/Hooks/useRoute';
 import Pagination from './Pagination';
 import PrimaryButton from './PrimaryButton';
+import { InertiaFormProps } from '@inertiajs/react/types/useForm';
+import { FormDataConvertible } from '@inertiajs/core';
 
 export type HandlePageFunction = (newPage: number) => void;
 
-export interface TableProps<Data extends Collection> {
+export interface TableProps<
+  Data extends Collection,
+  Filter extends FormDataConvertible,
+  RouteParam = {},
+> {
   rowDatas: PaginationType<Data>;
   columnDatas: ColumnType[];
-  search: string;
   dataRoute: string;
-  sortBy: string;
-  sortDirection: string;
-  page: number;
+  form: InertiaFormProps<TableForm<Filter>>;
+  routeParam?: RouteParam;
   openCreateForm: React.Dispatch<React.SetStateAction<boolean>>;
+  handleTableRowClick?: (id: number) => void;
 }
 
-export const Table = <Data extends Collection>({
+export const Table = <
+  Data extends Collection,
+  Filter extends FormDataConvertible,
+>({
   rowDatas,
   columnDatas,
   dataRoute,
-  search,
-  sortBy,
-  sortDirection,
-  page,
+  form,
+  routeParam,
   openCreateForm,
-}: TableProps<Data>) => {
+  handleTableRowClick,
+}: TableProps<Data, Filter>) => {
   const route = useRoute();
-
-  const form = useForm({
-    search: search || '',
-    sortBy: sortBy,
-    sortDirection: sortDirection,
-    page: page,
-  });
 
   const handleSearch = useCallback(
     (e: ChangeEvent<HTMLInputElement>) => {
@@ -79,7 +79,7 @@ export const Table = <Data extends Collection>({
   useEffect(() => {
     async function fetchData() {
       // Use the updated search value when making the get request
-      await form.get(route(dataRoute), {
+      await form.get(route(dataRoute, routeParam), {
         data: {
           search: form.data.search,
           sortBy: form.data.sortBy,
@@ -91,6 +91,7 @@ export const Table = <Data extends Collection>({
         preserveState: true,
       });
     }
+
     fetchData();
   }, [
     form.data.search,
@@ -135,7 +136,7 @@ export const Table = <Data extends Collection>({
       {/* Searchbar */}
 
       <div className="mb-4 flex items-baseline justify-evenly">
-        <SearchBar value={form.data.search} onChange={handleSearch} />
+        <SearchBar value={form.data.search || ''} onChange={handleSearch} />
 
         <PrimaryButton
           type="button"
@@ -164,7 +165,13 @@ export const Table = <Data extends Collection>({
           </thead>
           <tbody>
             {rowDatas.data?.map(row => (
-              <tr key={row.id}>
+              <tr
+                key={row.id}
+                className="group"
+                onClick={e => {
+                  handleTableRowClick && handleTableRowClick(row.id);
+                }}
+              >
                 {columnDatas.map(column => (
                   <TableCell key={column.key} row={row} column={column}>
                     {row[column.key]}

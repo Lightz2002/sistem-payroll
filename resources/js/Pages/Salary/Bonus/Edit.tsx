@@ -9,9 +9,8 @@ import useRoute from '@/Hooks/useRoute';
 import { useForm } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { handleSuccess } from './Index';
-import { User } from '@/types';
-import axios from 'axios';
+import { SalaryDeductionOrBonus } from '@/types';
+import Alert from '@/Components/Alert';
 
 interface Props {
   title?: string;
@@ -19,66 +18,44 @@ interface Props {
   button?: string;
   isOpenModal: boolean;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  data: User;
-  handleSuccess: handleSuccess;
+  data: SalaryDeductionOrBonus;
 }
 
-const EditEmployee = ({
-  title = 'Edit Employee',
-  content = 'Change employee data here',
+const Edit = ({
+  title = 'Edit Salary Bonus',
+  content = 'Change salary bonus data here',
   button = 'Save',
   isOpenModal,
   setIsOpenModal,
   data,
   children,
-  handleSuccess,
 }: PropsWithChildren<Props>) => {
-  const [roles, setRoles] = useState<AutocompleteType[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
-
-  useEffect(() => {
-    async function getInitialData() {
-      try {
-        const res = await axios.get('/roles');
-        setRoles(res.data);
-      } catch (e) {
-        console.log(e);
-      }
-    }
-
-    if (isOpenModal) getInitialData();
-  }, [isOpenModal]);
-
-  useEffect(() => {
-    if (roles) {
-      const userRole = roles.filter(role => role.value === data.roles);
-      form.setData('role', userRole[0]?.id);
-      setIsLoading(false);
-    }
-  }, [roles]);
+  const [isEditSuccess, setIsEditSuccess] = useState(false);
 
   function closeModal() {
     setIsOpenModal(false);
   }
 
+  const handleSuccess = () => {
+    closeModal();
+    setIsEditSuccess(true);
+  };
+
   const route = useRoute();
 
   const form = useForm({
+    id: data.id,
     name: data.name,
-    email: data.email,
-    role: Number.MIN_SAFE_INTEGER,
+    amount: data.amount,
+    salary_id: data.salary_id,
     processing: false,
     terms: false,
   });
 
-  const handleAutocompleteChange = (id: number, value: string) => {
-    form.setData('role', id);
-  };
-
-  function editEmployee(e: React.FormEvent) {
+  function editSalaryBonus(e: React.FormEvent) {
     e.preventDefault();
 
-    form.put(route('employee.update', { employee: data.id }), {
+    form.put(route('salary_bonus.update', { salaryBonus: data.id }), {
       onError: e => console.log(e),
       onSuccess: () => {
         handleSuccess();
@@ -87,11 +64,9 @@ const EditEmployee = ({
   }
 
   return (
-    <DialogModal isOpen={isOpenModal} onClose={closeModal}>
-      {isLoading ? (
-        <div>...Loading</div>
-      ) : (
-        <form onSubmit={editEmployee}>
+    <>
+      <DialogModal isOpen={isOpenModal} onClose={closeModal}>
+        <form onSubmit={editSalaryBonus}>
           <DialogModal.Content title={title}>
             {content}
 
@@ -110,31 +85,17 @@ const EditEmployee = ({
             </div>
 
             <div className="mt-4">
-              <InputLabel htmlFor="email">Email</InputLabel>
+              <InputLabel htmlFor="name">Amount</InputLabel>
 
               <TextInput
                 type="text"
                 className="mt-1 block w-3/4"
-                placeholder="email"
-                value={form.data.email}
-                onChange={e => form.setData('email', e.currentTarget.value)}
+                placeholder="amount"
+                value={form.data.amount}
+                onChange={e => form.setData('amount', +e.currentTarget.value)}
               />
 
-              <InputError message={form.errors.email} className="mt-2" />
-            </div>
-
-            <div className="mt-4">
-              <InputLabel htmlFor="role">Role</InputLabel>
-
-              <Autocomplete
-                placeholder="Type a role name"
-                suggestions={roles}
-                selectedId={form.data.role}
-                onAutocompleteChange={handleAutocompleteChange}
-                defaultInputValue={data.roles}
-              />
-
-              <InputError message={form.errors.role} className="mt-2" />
+              <InputError message={form.errors.amount} className="mt-2" />
             </div>
           </DialogModal.Content>
           <DialogModal.Footer>
@@ -154,9 +115,13 @@ const EditEmployee = ({
             </PrimaryButton>
           </DialogModal.Footer>
         </form>
-      )}
-    </DialogModal>
+      </DialogModal>
+
+      <Alert on={isEditSuccess} setOn={setIsEditSuccess}>
+        Salary Bonus Edited Successfully
+      </Alert>
+    </>
   );
 };
 
-export default EditEmployee;
+export default Edit;

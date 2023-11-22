@@ -20,10 +20,10 @@ const Pagination = <Data extends Collection>({
 
     if (link.label.includes('Previous')) {
       if (!link.url) return;
-      page = page - 1;
+      page = +page - 1;
     } else if (link.label.includes('Next')) {
       if (!link.url) return;
-      page = page + 1;
+      page = +page + 1;
     } else {
       page = +link.label;
     }
