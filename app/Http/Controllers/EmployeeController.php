@@ -31,10 +31,12 @@ class EmployeeController extends Controller
         $page = ((is_nan(request()->page) || !request()->page) ? 1 : request()->page);
 
         return Inertia::render("Employees/Index", [
-            'search' => $search,
-            'sortBy' => $sortBy,
-            'sortDirection' => $sortDirection,
-            'page' => $page,
+            'tableForm' => [
+                'search' => $search,
+                'sortBy' => $sortBy,
+                'sortDirection' => $sortDirection,
+                'page' => $page,
+            ],
             'dataRoute' => 'employee',
             'datas' => User::filter($search)->orderBy($sortBy, $sortDirection)->paginate(5),
             'columnDatas' => [

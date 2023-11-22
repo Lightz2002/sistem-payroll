@@ -1,6 +1,7 @@
 import Alert from '@/Components/Alert';
 import useRoute from '@/Hooks/useRoute';
-import Edit from '@/Pages/Employees/Edit';
+import Delete from '@/Pages/Salary/Bonus/Delete';
+import Edit from '@/Pages/Salary/Bonus/Edit';
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react';
 
@@ -13,12 +14,7 @@ interface Props {
 const Action = ({ id, row, value }: Props) => {
   const route = useRoute();
   const [openEditModal, setOpenEditModal] = useState(false);
-  const [isEditSuccess, setIsEditSuccess] = useState(false);
-
-  function handleSuccess() {
-    setIsEditSuccess(true);
-    setOpenEditModal(false);
-  }
+  const [openDeleteModal, setOpenDeleteModal] = useState(false);
 
   return (
     <>
@@ -45,7 +41,8 @@ const Action = ({ id, row, value }: Props) => {
         </button>
         <button
           data-user-id={id}
-          className="edit-user-button inline-flex me-4 border bg-red-400 text-white px-4 py-2 text-xs rounded-md"
+          className="edit-user-button inline-flex me-4 border bg-red-400 text-white px-4 py-2 text-xs rounded-md hover:bg-red-600"
+          onClick={() => setOpenDeleteModal(true)}
         >
           <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -65,15 +62,16 @@ const Action = ({ id, row, value }: Props) => {
         </button>
       </div>
 
-      <Alert on={isEditSuccess} setOn={setIsEditSuccess}>
-        Employee Edited Successfully
-      </Alert>
-
       <Edit
         data={row}
         isOpenModal={openEditModal}
         setIsOpenModal={setOpenEditModal}
-        handleSuccess={handleSuccess}
+      />
+
+      <Delete
+        data={row}
+        isOpenModal={openDeleteModal}
+        setIsOpenModal={setOpenDeleteModal}
       />
     </>
   );

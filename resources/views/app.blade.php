@@ -10,6 +10,16 @@
     <link rel="preconnect" href="https://fonts.bunny.net">
     <link href="https://fonts.bunny.net/css?family=figtree:400,500,600&display=swap" rel="stylesheet" />
 
+    <style>
+      /* Style the calendar icon to appear white */
+      /* Note: This is specific to WebKit-based browsers (Chrome, Safari) */
+      input[type="date"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+      }
+      input[type="month"]::-webkit-calendar-picker-indicator {
+        filter: invert(1);
+      }
+    </style>
     <!-- Scripts -->
     @routes
     @viteReactRefresh
