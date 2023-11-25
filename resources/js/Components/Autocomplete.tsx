@@ -71,6 +71,7 @@ export default function Autocomplete({
         {...props}
         value={inputValue}
         data-id={selectedId}
+        onClick={e => e.stopPropagation()}
         onChange={handleInputChange}
         onFocus={handleInputFocus}
         onBlur={handleInputBlur}
@@ -80,7 +81,7 @@ export default function Autocomplete({
         )}
       />
       {showAutocomplete && (
-        <ul className="suggestion-list absolute left-0 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm">
+        <ul className="suggestion-list z-50 absolute left-0 mt-1 w-full bg-white dark:bg-gray-900 border border-gray-300 dark:border-gray-700 rounded-md shadow-sm">
           {filteredSuggestions.map(suggestion => (
             <li
               key={suggestion.id}

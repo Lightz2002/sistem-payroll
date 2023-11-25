@@ -9,7 +9,6 @@ import useRoute from '@/Hooks/useRoute';
 import { useForm } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { handleSuccess } from './Index';
 import { User } from '@/types';
 import axios from 'axios';
 
@@ -20,7 +19,7 @@ interface Props {
   isOpenModal: boolean;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   data: User;
-  handleSuccess: handleSuccess;
+  handleSuccess: () => void;
 }
 
 const Edit = ({

@@ -9,6 +9,9 @@ import useRoute from '@/Hooks/useRoute';
 import { useForm } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useState } from 'react';
+import { handleSuccess } from './Index';
+import useTypedPage from '@/Hooks/useTypedPage';
+import { User } from '@/types';
 
 interface Props {
   title?: string;
@@ -16,20 +19,35 @@ interface Props {
   button?: string;
   isOpenModal: boolean;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
-  data: AutocompleteType[];
-  handleSuccess: () => void;
+  handleSuccess: handleSuccess;
 }
 
 const Create = ({
-  title = 'Create Salary',
-  content = 'For tracking record of employee monthly salary',
+  title = 'Create Absence',
+  content = 'For tracking record of employee absence',
   button = 'Save',
   isOpenModal,
   setIsOpenModal,
-  data,
   children,
   handleSuccess,
 }: PropsWithChildren<Props>) => {
+  const page = useTypedPage<User>();
+
+  const types = [
+    {
+      id: 1,
+      value: 'Present',
+    },
+    {
+      id: 2,
+      value: 'Permission',
+    },
+    {
+      id: 3,
+      value: 'Sick',
+    },
+  ];
+
   function closeModal() {
     setIsOpenModal(false);
   }
@@ -38,21 +56,21 @@ const Create = ({
 
   const form = useForm({
     date: '',
-    salary_per_day: 0,
-    employee: data[0]?.id || Number.MIN_SAFE_INTEGER,
+    type: 1,
+    employee: page.props.auth.user?.id,
     processing: false,
     terms: false,
   });
 
-  const handleAutocompleteChange = (id: number, value: string) => {
-    form.setData('employee', id);
+  const handleTypeAutocompleteChange = (id: number, value: string) => {
+    form.setData('type', id);
   };
 
-  function createSalary(e: React.FormEvent) {
+  function createAbsence(e: React.FormEvent) {
     e.preventDefault();
     const { processing, ...formData } = form; // exclude 'error' and 'processing' properties
 
-    form.post(route('salary.store'), {
+    form.post(route('absence.store'), {
       onError: e => console.log(e),
       onSuccess: () => {
         handleSuccess();
@@ -62,7 +80,7 @@ const Create = ({
 
   return (
     <DialogModal isOpen={isOpenModal} onClose={closeModal}>
-      <form onSubmit={createSalary}>
+      <form onSubmit={createAbsence}>
         <DialogModal.Content title={title}>
           {content}
 
@@ -70,7 +88,7 @@ const Create = ({
             <InputLabel htmlFor="date">Date</InputLabel>
 
             <TextInput
-              type="month"
+              type="date"
               className="mt-1 block w-3/4 text-white"
               value={form.data.date}
               onChange={e => form.setData('date', e.currentTarget.value)}
@@ -80,33 +98,17 @@ const Create = ({
           </div>
 
           <div className="mt-4">
-            <InputLabel htmlFor="salary_per_day">Salary Per Day</InputLabel>
-
-            <TextInput
-              type="text"
-              className="mt-1 block w-3/4"
-              placeholder="salary_per_day"
-              value={form.data.salary_per_day}
-              onChange={e =>
-                form.setData('salary_per_day', +e.currentTarget.value)
-              }
-            />
-
-            <InputError message={form.errors.salary_per_day} className="mt-2" />
-          </div>
-
-          <div className="mt-4">
-            <InputLabel htmlFor="employee">Employee</InputLabel>
+            <InputLabel htmlFor="type">Type</InputLabel>
 
             <Autocomplete
-              placeholder="Type a employee name"
-              suggestions={data}
-              selectedId={form.data.employee}
-              onAutocompleteChange={handleAutocompleteChange}
-              defaultInputValue={data[0].value}
+              placeholder="Type a type name"
+              suggestions={types}
+              selectedId={form.data.type}
+              onAutocompleteChange={handleTypeAutocompleteChange}
+              defaultInputValue={types[0]?.value}
             />
 
-            <InputError message={form.errors.employee} className="mt-2" />
+            <InputError message={form.errors.type} className="mt-2" />
           </div>
         </DialogModal.Content>
         <DialogModal.Footer>

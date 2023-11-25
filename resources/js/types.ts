@@ -28,7 +28,7 @@ export interface User {
   email_verified_at: Nullable<DateTime>;
   created_at: DateTime;
   updated_at: DateTime;
-  roles: string;
+  roles: Role[];
   menus: string[];
   // permissions: string[];
 }
@@ -149,16 +149,35 @@ export interface TableForm<Data = undefined> {
 export interface Salary extends Collection {
   date: string;
   employee: string;
+  employee_id: number;
   total_amount: number;
   salary_per_day: number;
   total_salary_bonus: number;
   total_salary_deduction: number;
   salary_deductions: PaginationType<SalaryDeductionOrBonus>;
   salary_bonus: PaginationType<SalaryDeductionOrBonus>;
+  status: string;
+  absence: PaginationType<Absence>;
 }
+
+export interface SalaryForm extends Collection {
+  id: number;
+  date: string;
+  employee: string;
+  total_amount: number;
+  salary_per_day: number;
+  status: string;
+}
+
 export interface SalaryDeductionOrBonus extends Collection {
   name: string;
   amount: number;
+}
+
+export interface Absence extends Collection {
+  type: string;
+  date: string;
+  employee: string;
 }
 
 // export type OpenModalFormHandle = () => void;

@@ -2,21 +2,20 @@ import React, { useEffect, useState } from 'react';
 import AppLayout from '@/Layouts/AppLayout';
 import { Table, TableProps } from '@/Components/Table';
 import useTypedPage from '@/Hooks/useTypedPage';
-import { PaginationType, Salary, TableForm, User } from '@/types';
+import { PaginationType, Absence, TableForm, User } from '@/types';
 import Create from './Create';
 import { AutocompleteType } from '@/Components/Autocomplete';
 import Alert from '@/Components/Alert';
-import Filter, { SalaryFilter, filtersDefault } from './Filter';
+import Filter, { AbsenceFilter, absenceFiltersDefault } from './Filter';
 import { useForm } from '@inertiajs/react';
 import { FormDataConvertible } from '@inertiajs/core';
 import route from 'ziggy-js';
-import StatusFilters from './StatusFilter';
-import { getUserRole } from '@/Utils/helper';
+import StatusFilters from '../Salary/StatusFilter';
 
-interface Props extends TableProps<Salary, SalaryFilter> {
-  datas: PaginationType<Salary>;
+interface Props extends TableProps<Absence, AbsenceFilter> {
+  datas: PaginationType<Absence>;
   employeeAutocomplete: AutocompleteType[];
-  tableForm: TableForm<SalaryFilter>;
+  tableForm: TableForm<AbsenceFilter>;
 }
 
 export type handleSuccess = () => void;
@@ -28,7 +27,8 @@ export default function Index({
   columnDatas,
   employeeAutocomplete,
 }: Props) {
-  const page = useTypedPage<User>();
+  // const page = useTypedPage<User>();
+
   const form = useForm(tableForm);
   const form2 = useForm();
 
@@ -36,35 +36,10 @@ export default function Index({
   const [openFilterModal, setOpenFilterModal] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
 
-  useEffect(() => {
-    async function refreshSalary() {
-      await getSalary();
-    }
-
-    if (form.data.filters) {
-      refreshSalary();
-    }
-  }, [form.data.filters]);
-
-  const getSalary = () => {
-    form.get(route('salary'), {
-      data: {
-        ...form.data,
-        dateFrom: form.data.filters?.dateFrom,
-        dateUntil: form.data.filters?.dateUntil,
-        employee: form.data.filters?.employee,
-        status: form.data.filters?.status,
-      },
-      errorBag: 'search',
-      preserveScroll: true,
-      preserveState: true,
-      onError: e => console.log(e),
-    });
-  };
-
   const handleSuccess = () => {
     setIsSuccess(true);
     setOpenCreateModal(false);
+    form.reset();
   };
 
   const handleFilterModal = () => {
@@ -78,7 +53,7 @@ export default function Index({
   const handleApplyFilter = (e: React.FormEvent) => {
     e.preventDefault();
 
-    getSalary();
+    getAbsence();
     closeModal();
   };
 
@@ -87,47 +62,94 @@ export default function Index({
     closeModal();
   };
 
+  const filterInitialData = {
+    employees: employeeAutocomplete,
+    types: [
+      {
+        id: 1,
+        value: 'Present',
+      },
+      {
+        id: 2,
+        value: 'Permission',
+      },
+      {
+        id: 3,
+        value: 'Sick',
+      },
+    ],
+  };
+
   const filterStatus = (status: string) => {
     form.setData('filters', {
-      employee: form.data.filters?.employee || filtersDefault.employee,
-      dateFrom: form.data.filters?.dateFrom || filtersDefault.dateFrom,
-      dateUntil: form.data.filters?.dateUntil || filtersDefault.dateUntil,
-      processing: form.data.filters?.processing || filtersDefault.processing,
+      salaryDate:
+        form.data.filters?.salaryDate || absenceFiltersDefault.salaryDate,
+      dateFrom: form.data.filters?.dateFrom || absenceFiltersDefault.dateFrom,
+      dateUntil:
+        form.data.filters?.dateUntil || absenceFiltersDefault.dateUntil,
+      employee: form.data.filters?.employee || absenceFiltersDefault.employee,
       status: status,
+      processing:
+        form.data.filters?.processing || absenceFiltersDefault.processing,
+      type: form.data.filters?.type || absenceFiltersDefault.type,
     });
   };
 
-  const filterInitialData = { employees: employeeAutocomplete };
+  function getAbsence() {
+    form.get(route('absence'), {
+      data: {
+        ...form.data,
+        salaryDate: form.data.filters?.salaryDate,
+        dateFrom: form.data.filters?.dateFrom,
+        dateUntil: form.data.filters?.dateUntil,
+        type: form.data.filters?.type,
+        search: form.data.filters?.search,
+        status: form.data.filters?.status,
+        employee: form.data.filters?.employee,
+      },
+      errorBag: 'search',
+      preserveScroll: true,
+      preserveState: true,
+      onError: e => console.log(e),
+    });
+  }
 
-  const handleTableRowClick = (id: number) => {
-    form2.get(route('salary.show', id));
-  };
+  useEffect(() => {
+    async function refreshAbsence() {
+      await getAbsence();
+    }
+
+    if (form.data.filters) {
+      refreshAbsence();
+    }
+  }, [form.data.filters]);
 
   return (
     <AppLayout
-      title="Salary List"
+      title="Absence List"
       renderHeader={() => (
         <h2 className="font-semibold text-xl text-gray-800 dark:text-gray-200 leading-tight">
-          Salary List
+          Absence List
         </h2>
       )}
     >
       <Create
         isOpenModal={openCreateModal}
         setIsOpenModal={setOpenCreateModal}
-        data={employeeAutocomplete}
         handleSuccess={handleSuccess}
       />
       <div className="py-12">
         <div className="max-w-7xl mx-auto sm:px-6 lg:px-8">
           <div className="bg-white dark:bg-gray-800 overflow-hidden shadow-sm sm:rounded-lg p-8">
             <h3 className="mb-4 text-lg font-bold text-gray-700 dark:text-gray-300">
-              Salary List
+              Absence List
             </h3>
 
             <div className="flex mb-4">
               <StatusFilters
-                status={form.data.filters?.status || filtersDefault.status}
+                status={
+                  form.data.filters?.status || absenceFiltersDefault.status
+                }
                 filterStatus={filterStatus}
               />
 
@@ -161,21 +183,19 @@ export default function Index({
               form={form}
             />
 
-            <Table<Salary, SalaryFilter>
+            <Table<Absence, AbsenceFilter>
               form={form}
               dataRoute={dataRoute}
               rowDatas={datas}
               columnDatas={columnDatas}
-              hideCreateButton={getUserRole() !== 'manager'}
               openCreateForm={setOpenCreateModal}
-              handleTableRowClick={handleTableRowClick}
             ></Table>
           </div>
         </div>
       </div>
 
       <Alert on={isSuccess} setOn={setIsSuccess}>
-        Salary Created Successfully
+        Absence Created Successfully
       </Alert>
     </AppLayout>
   );

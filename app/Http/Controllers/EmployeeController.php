@@ -120,6 +120,12 @@ class EmployeeController extends Controller
         //
     }
 
+    public function getEmployeeAutocomplete()
+    {
+        $user = User::selectRaw('id, name as value')->get();
+        return response()->json($user);
+    }
+
     /**
      * Display a listing of the resource.
      */

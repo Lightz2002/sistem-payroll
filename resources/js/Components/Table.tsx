@@ -22,8 +22,9 @@ export interface TableProps<
   dataRoute: string;
   form: InertiaFormProps<TableForm<Filter>>;
   routeParam?: RouteParam;
-  openCreateForm: React.Dispatch<React.SetStateAction<boolean>>;
+  openCreateForm?: React.Dispatch<React.SetStateAction<boolean>>;
   handleTableRowClick?: (id: number) => void;
+  hideCreateButton?: boolean;
 }
 
 export const Table = <
@@ -37,6 +38,7 @@ export const Table = <
   routeParam,
   openCreateForm,
   handleTableRowClick,
+  hideCreateButton,
 }: TableProps<Data, Filter>) => {
   const route = useRoute();
 
@@ -131,6 +133,8 @@ export const Table = <
     );
   };
 
+  const showCreateButton = openCreateForm && !hideCreateButton;
+
   return (
     <div className="table-full-container">
       {/* Searchbar */}
@@ -138,13 +142,15 @@ export const Table = <
       <div className="mb-4 flex items-baseline justify-evenly">
         <SearchBar value={form.data.search || ''} onChange={handleSearch} />
 
-        <PrimaryButton
-          type="button"
-          className={`ml-auto`}
-          onClick={() => openCreateForm(true)}
-        >
-          Create
-        </PrimaryButton>
+        {showCreateButton && (
+          <PrimaryButton
+            type="button"
+            className={`ml-auto`}
+            onClick={() => openCreateForm(true)}
+          >
+            Create
+          </PrimaryButton>
+        )}
       </div>
 
       <div className="mb-4  overflow-hidden rounded-lg shadow-md">
@@ -169,6 +175,8 @@ export const Table = <
                 key={row.id}
                 className="group"
                 onClick={e => {
+                  e.stopPropagation();
+                  console.log(e);
                   handleTableRowClick && handleTableRowClick(row.id);
                 }}
               >
