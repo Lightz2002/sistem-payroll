@@ -42,7 +42,8 @@ class Absence extends Model
             ->whereRaw("IFNULL(s.status, 'entry') = ?", [$filters['status']])
             ->where(function ($query) use ($search) {
                 $query->where('employee.name', 'like', '%' . $search . '%')
-                    ->orWhere('absences.date', 'like', '%' . $search . '%');
+                    ->orWhere('absences.date', 'like', '%' . $search . '%')
+                    ->orWhere('absences.type', 'like', '%' . $search . '%');
             })
             ->where(function ($query) use ($search, $filters, $user) {
                 if ($filters['dateFrom'] && $filters['dateUntil']) {

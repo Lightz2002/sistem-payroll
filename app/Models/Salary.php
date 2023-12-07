@@ -63,13 +63,15 @@ class Salary extends Model
     {
         $user = Auth::user();
         $query = $query->join('users as employee', 'employee.id', '=', 'salaries.employee_id')
-            ->select(DB::raw('salaries.*, employee.name as employee'))
+            ->join('model_has_roles', 'model_has_roles.model_id', '=', 'employee.id')
+            ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
+            ->select(DB::raw('salaries.*, employee.name as employee, roles.name as role'))
             ->where('status', $filters['status'])
-            ->where(function ($query) use ($search, $filters) {
+            ->where(function ($query) use ($search) {
                 $query->where('employee.name', 'like', '%' . $search . '%')
                     ->orWhereRaw("DATE_FORMAT(date, '%M %Y') LIKE '%{$search}%' ");
             })
-            ->where(function ($query) use ($search, $filters) {
+            ->where(function ($query) use ($filters) {
                 if ($filters['dateFrom'] && $filters['dateUntil']) {
                     $query->whereRaw('DATE_FORMAT(date, "%Y-%m") >= ? and DATE_FORMAT(date, "%Y-%m") <= ?', [$filters['dateFrom'], $filters['dateUntil']]);
                 } else if ($filters['dateFrom'] && !$filters['dateUntil']) {
@@ -85,6 +87,7 @@ class Salary extends Model
         if (!$user->hasRole('manager')) {
             $query->where('employee_id', $user->id);
         }
+
 
         return $query;
     }

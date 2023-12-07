@@ -21,6 +21,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  identity_no: string;
   current_team_id: Nullable<number>;
   profile_photo_path: Nullable<string>;
   profile_photo_url: string;
@@ -28,7 +29,7 @@ export interface User {
   email_verified_at: Nullable<DateTime>;
   created_at: DateTime;
   updated_at: DateTime;
-  roles: Role[];
+  roles: Role[] | string;
   menus: string[];
   // permissions: string[];
 }
@@ -180,4 +181,15 @@ export interface Absence extends Collection {
   employee: string;
 }
 
-// export type OpenModalFormHandle = () => void;
+export interface DashboardType {
+  total_paid_salary_all_time: number;
+  total_paid_employee: number;
+  total_employee_not_coming_today: number;
+  total_paid_salary_last_month: number;
+  total_paid_salary_this_month: number;
+  total_present: number;
+  total_sick: number;
+  total_permission: number;
+  total_salary_this_month: number;
+  total_salary_last_month: number;
+}

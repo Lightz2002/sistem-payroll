@@ -69,7 +69,7 @@ class SalaryController extends Controller
                 'filters' => $filters
             ],
             'dataRoute' => 'salary',
-            'datas' => Salary::filter($search, $filters)->orderBy($sortBy, $sortDirection)->paginate(5),
+            'datas' => Salary::filter($search, $filters)->orderBy($sortBy, $sortDirection)->paginate(10),
             'columnDatas' => $columns,
             'employeeAutocomplete' => User::selectRaw('id, name as value')->get(),
         ]);
@@ -108,9 +108,9 @@ class SalaryController extends Controller
         $salaryBonus = $salary->filterDetail($search, 'salary_bonuses');
         $salaryAbsence = $this->salaryService->getAbsenceBySalary($salary)
             ->filter(
-                '',
+                $search,
                 [
-                    'status' => 'entry',
+                    'status' => $salary->status,
                     'salaryDate' => '',
                     'dateFrom' => '',
                     'dateUntil' => '',
@@ -120,11 +120,11 @@ class SalaryController extends Controller
             );
 
         /* tables data */
-        $salary->salary_deductions = $salaryDeductions->orderBy($sortBy, $sortDirection)->paginate(5);
-        $salary->salary_bonus = $salaryBonus->orderBy($sortBy, $sortDirection)->paginate(5);
+        $salary->salary_deductions = $salaryDeductions->orderBy($sortBy, $sortDirection)->paginate(10);
+        $salary->salary_bonus = $salaryBonus->orderBy($sortBy, $sortDirection)->paginate(10);
         $salary->total_salary_bonus = $salaryBonus->sum('amount');
         $salary->total_salary_deduction = $salaryDeductions->sum('amount');
-        $salary->absence = $salaryAbsence->orderBy($sortBy, $sortDirection)->paginate(5);
+        $salary->absence = $salaryAbsence->orderBy($sortBy, $sortDirection)->paginate(10);
         $salary->total_absence = $salaryAbsence->count();
 
 
@@ -283,12 +283,48 @@ class SalaryController extends Controller
 
     public function printEmployeesSalary()
     {
+        $search = request()->search;
+        $dateFrom = request()->filters['dateFrom'] ?? '';
+        $status = request()->filters['status'] ?? 'entry';
+        $dateUntil = request()->filters['dateUntil'] ?? '';
+        $employee = request()->filters['employee'] ?? '';
+        $sortBy = request()->sortBy ?? 'created_at';
+        $sortDirection = request()->sortDirection ?? 'asc';
+        $page = ((is_nan(request()->page) || !request()->page) ? 1 : request()->page);
+
+        $filters = [
+            'dateFrom' => $dateFrom,
+            'dateUntil' => $dateUntil,
+            'employee' => $employee,
+            'status' => $status,
+        ];
+
+        $salaries = Salary::filter($search, $filters)->orderBy($sortBy, $sortDirection)->paginate(10);
+
+        $pdf = Pdf::loadView('pdf.salary_report', ['datas' => $salaries]);
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isPhpEnabled', true);
+        $pdf->setOption('margin-top', 45);
+        $pdf->setOption('margin-bottom', 30);
+        $pdf->setOption('margin-right', 15);
+        $pdf->setOption('margin-left', 15);
+
+        return $pdf->stream('report.pdf');
     }
 
     public function printEmployeeSalary(Salary $salary)
     {
+        $salary->total_salary_bonus = $salary->salary_bonus->sum('amount');
+        $salary->total_salary_deduction = $salary->salary_deductions->sum('amount');
 
         $pdf = Pdf::loadView('pdf.receipt', ['data' => $salary]);
-        return $pdf->stream('invoice.pdf');
+        $pdf->setOption('isHtml5ParserEnabled', true);
+        $pdf->setOption('isPhpEnabled', true);
+        $pdf->setOption('margin-top', 45);
+        $pdf->setOption('margin-bottom', 30);
+        $pdf->setOption('margin-right', 15);
+        $pdf->setOption('margin-left', 15);
+
+        return $pdf->stream('receipt.pdf');
     }
 }

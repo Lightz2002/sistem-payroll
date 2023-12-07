@@ -69,8 +69,10 @@ class User extends Authenticatable
         return $query->join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')
             ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
             ->select(DB::raw('users.*, roles.name AS roles'))
-            ->where('users.name', 'like', '%' . $search . '%')
-            ->orWhere('email', 'like', '%' . $search . '%')
-            ->orWhere('roles.name', 'like', '%' . $search . '%');
+            ->where(function ($query) use ($search) {
+                $query->where('users.name', 'like', '%' . $search . '%')
+                    ->orWhere('email', 'like', '%' . $search . '%')
+                    ->orWhere('roles.name', 'like', '%' . $search . '%');
+            });
     }
 }

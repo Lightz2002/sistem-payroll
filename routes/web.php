@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AbsenceController;
+use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\SalaryController;
@@ -35,9 +36,7 @@ Route::middleware([
     config('jetstream.auth_session'),
     'verified',
 ])->group(function () {
-    Route::get('/dashboard', function () {
-        return Inertia::render('Dashboard');
-    })->name('dashboard');
+    Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
 
     Route::get('/autocomplete/employees', [EmployeeController::class, 'getEmployeeAutocomplete'])->name('employee.getAutocomplete');
 
@@ -52,6 +51,7 @@ Route::middleware([
     Route::get('/salary', [SalaryController::class, 'index'])->name('salary');
     Route::get('/salary/{salary}', [SalaryController::class, 'show'])->name('salary.show');
     Route::post('/salary', [SalaryController::class, 'store'])->name('salary.store');
+    Route::post('/salary/pdf', [SalaryController::class, 'printEmployeesSalary'])->name('salary.printAll');
     Route::post('/salary/{salary}/pdf', [SalaryController::class, 'printEmployeeSalary'])->name('salary.print');
     Route::put('/salary/{salary}', [SalaryController::class, 'update'])->name('salary.update');
     Route::delete('/salary/{salary}', [SalaryController::class, 'destroy'])->name('salary.destroy');

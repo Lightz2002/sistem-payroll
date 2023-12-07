@@ -176,7 +176,6 @@ export const Table = <
                 className="group"
                 onClick={e => {
                   e.stopPropagation();
-                  console.log(e);
                   handleTableRowClick && handleTableRowClick(row.id);
                 }}
               >
