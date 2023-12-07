@@ -43,7 +43,7 @@ const Action = ({ id, row, value }: Props) => {
           </svg>
           <span>Edit</span>
         </button>
-        <button
+        {/* <button
           data-user-id={id}
           className="edit-user-button inline-flex me-4 border bg-red-400 text-white px-4 py-2 text-xs rounded-md"
         >
@@ -62,7 +62,7 @@ const Action = ({ id, row, value }: Props) => {
             />
           </svg>
           <span>Delete</span>
-        </button>
+        </button> */}
       </div>
 
       <Alert on={isEditSuccess} setOn={setIsEditSuccess}>

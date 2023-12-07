@@ -9,7 +9,6 @@ import useRoute from '@/Hooks/useRoute';
 import { useForm } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
-import { handleSuccess } from './Index';
 import { User } from '@/types';
 import axios from 'axios';
 
@@ -20,7 +19,7 @@ interface Props {
   isOpenModal: boolean;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   data: User;
-  handleSuccess: handleSuccess;
+  handleSuccess: () => void;
 }
 
 const Edit = ({
@@ -67,6 +66,7 @@ const Edit = ({
     name: data.name,
     email: data.email,
     role: Number.MIN_SAFE_INTEGER,
+    identity_no: data.identity_no,
     processing: false,
     terms: false,
   });
@@ -135,6 +135,22 @@ const Edit = ({
               />
 
               <InputError message={form.errors.role} className="mt-2" />
+            </div>
+
+            <div className="mt-4">
+              <InputLabel htmlFor="identity_no">Identity_no</InputLabel>
+
+              <TextInput
+                type="text"
+                className="mt-1 block w-3/4"
+                placeholder="Identity"
+                value={form.data.identity_no}
+                onChange={e =>
+                  form.setData('identity_no', e.currentTarget.value)
+                }
+              />
+
+              <InputError message={form.errors.identity_no} className="mt-2" />
             </div>
           </DialogModal.Content>
           <DialogModal.Footer>

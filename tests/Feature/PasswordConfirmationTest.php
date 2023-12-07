@@ -15,7 +15,7 @@ class PasswordConfirmationTest extends TestCase
         // Run the DatabaseSeeder...
         $this->seed();
 
-        $user = User::factory()->withPersonalTeam()->create()->assignRole("employee");
+        $user = User::factory()->withPersonalTeam()->create()->assignRole("admin");
 
         $response = $this->actingAs($user)->get('/user/confirm-password');
 

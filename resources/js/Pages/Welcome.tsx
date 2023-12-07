@@ -20,6 +20,8 @@ export default function Welcome({
   const route = useRoute();
   const page = useTypedPage();
 
+  return (window.location.href = 'http://sistem-payroll.test/login');
+
   return (
     <>
       <Head title="Welcome" />

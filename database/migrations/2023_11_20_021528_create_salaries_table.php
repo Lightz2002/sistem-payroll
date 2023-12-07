@@ -18,8 +18,8 @@ return new class extends Migration
             $table->date('date');
             $table->decimal('salary_per_day', 12, 2);
             $table->decimal('total_amount', 12, 2);
+            $table->enum('status', ['entry', 'posted']);
             $table->timestamps();
-
             $table->unique(['employee_id', 'date']);
         });
     }

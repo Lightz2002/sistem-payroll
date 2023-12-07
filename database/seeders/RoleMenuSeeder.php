@@ -22,17 +22,65 @@ class RoleMenuSeeder extends Seeder
 
         $roleMenuNames = [
             [
-                'role' => 'admin',
+                'role' => 'manager',
                 'menu' => 'employee'
+            ],
+            [
+                'role' => 'manager',
+                'menu' => 'salary'
+            ],
+            [
+                'role' => 'manager',
+                'menu' => 'absence'
+            ],
+            [
+                'role' => 'admin',
+                'menu' => 'absence'
             ],
             [
                 'role' => 'admin',
                 'menu' => 'salary'
             ],
             [
-                'role' => 'employee',
+                'role' => 'collector',
                 'menu' => 'absence'
-            ]
+            ],
+            [
+                'role' => 'collector',
+                'menu' => 'salary'
+            ],
+            [
+                'role' => 'surveyor',
+                'menu' => 'absence'
+            ],
+            [
+                'role' => 'surveyor',
+                'menu' => 'salary'
+            ],
+            [
+                'role' => 'warehouse',
+                'menu' => 'absence'
+            ],
+            [
+                'role' => 'warehouse',
+                'menu' => 'salary'
+            ],
+            [
+                'role' => 'sales',
+                'menu' => 'absence'
+            ],
+            [
+                'role' => 'sales',
+                'menu' => 'salary'
+            ],
+            [
+                'role' => 'helper',
+                'menu' => 'absence'
+            ],
+            [
+                'role' => 'helper',
+                'menu' => 'salary'
+            ],
         ];
 
         $roleMenuDatas = [];

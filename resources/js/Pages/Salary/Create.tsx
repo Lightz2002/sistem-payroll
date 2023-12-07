@@ -9,7 +9,6 @@ import useRoute from '@/Hooks/useRoute';
 import { useForm } from '@inertiajs/react';
 import classNames from 'classnames';
 import React, { PropsWithChildren, useState } from 'react';
-import { handleSuccess } from './Index';
 
 interface Props {
   title?: string;
@@ -18,7 +17,7 @@ interface Props {
   isOpenModal: boolean;
   setIsOpenModal: React.Dispatch<React.SetStateAction<boolean>>;
   data: AutocompleteType[];
-  handleSuccess: handleSuccess;
+  handleSuccess: () => void;
 }
 
 const Create = ({

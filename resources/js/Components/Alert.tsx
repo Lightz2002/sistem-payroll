@@ -101,19 +101,11 @@ export default function Alert({
   }
 
   useEffect(() => {
-    console.log('useEffect triggered:', on);
-
     if (on) {
-      console.log('Setting timeout to hide alert');
       setTimeout(() => {
-        console.log('Hiding alert now');
         setOn(false);
       }, 2000);
     }
-
-    return () => {
-      console.log('unmounted');
-    };
   }, [on]);
 
   return (

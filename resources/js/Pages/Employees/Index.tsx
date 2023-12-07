@@ -6,7 +6,6 @@ import { PaginationType, TableForm, User } from '@/types';
 import Create from './Create';
 import { AutocompleteType } from '@/Components/Autocomplete';
 import Alert from '@/Components/Alert';
-import Filter from '../Salary/Filter';
 import { useForm } from '@inertiajs/react';
 import { FormDataConvertible } from '@inertiajs/core';
 
@@ -15,8 +14,6 @@ interface Props extends TableProps<User, undefined> {
   roleAutocomplete: AutocompleteType[];
   tableForm: TableForm<undefined>;
 }
-
-export type handleSuccess = () => void;
 
 export default function Index({
   tableForm,

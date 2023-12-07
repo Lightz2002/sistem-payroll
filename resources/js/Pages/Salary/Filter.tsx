@@ -10,14 +10,17 @@ import TextInput from '@/Components/TextInput';
 import InputError from '@/Components/InputError';
 import moment from 'moment';
 import Autocomplete, { AutocompleteType } from '@/Components/Autocomplete';
-import { TableForm } from '@/types';
+import { TableForm, User } from '@/types';
 import { InertiaFormProps } from '@inertiajs/react/types/useForm';
 import { FormDataConvertible } from '@inertiajs/core';
+import useTypedPage from '@/Hooks/useTypedPage';
+import { getUserRole } from '@/Utils/helper';
 
 export interface SalaryFilter {
   dateFrom: string | undefined;
   dateUntil: string | undefined;
   employee: string;
+  status: string;
   processing: boolean;
   [key: string]: FormDataConvertible;
 }
@@ -34,6 +37,14 @@ interface Props {
   form: InertiaFormProps<TableForm<SalaryFilter>>;
 }
 
+export const filtersDefault = {
+  employee: '',
+  dateFrom: '',
+  dateUntil: '',
+  status: 'entry',
+  processing: false,
+};
+
 export default function Filter({
   on,
   handleApply,
@@ -41,14 +52,7 @@ export default function Filter({
   data,
   form,
 }: Props) {
-  // const page = useTypedPage<User>();
-
-  const filtersDefault = {
-    employee: '',
-    dateFrom: '',
-    dateUntil: '',
-    processing: false,
-  };
+  const page = useTypedPage<User>();
 
   const handleAutocompleteChange = (id: number, value: string) => {
     form.setData('filters', {
@@ -56,12 +60,14 @@ export default function Filter({
       dateFrom: form.data.filters?.dateFrom || filtersDefault.dateFrom,
       dateUntil: form.data.filters?.dateUntil || filtersDefault.dateUntil,
       processing: form.data.filters?.processing || filtersDefault.processing,
+      status: form.data.filters?.status || filtersDefault.status,
     });
   };
 
-  const selectedEmployee = data.employees.filter(employee =>
-    employee.value.includes(form.data.filters?.employee || ''),
-  );
+  const selectedEmployee = data.employees.filter(employee => {
+    if (form.data.filters?.employee === '') return false;
+    return employee.value.includes(form.data.filters?.employee || '');
+  });
 
   return (
     <DialogModal isOpen={on} onClose={handleCancel}>
@@ -83,6 +89,7 @@ export default function Filter({
                     form.data.filters?.dateUntil || filtersDefault.dateUntil,
                   processing:
                     form.data.filters?.processing || filtersDefault.processing,
+                  status: form.data.filters?.status || filtersDefault.status,
                 })
               }
             />
@@ -106,6 +113,7 @@ export default function Filter({
                   dateUntil: e.currentTarget.value,
                   processing:
                     form.data.filters?.processing || filtersDefault.processing,
+                  status: form.data.filters?.status || filtersDefault.status,
                 })
               }
             />
@@ -113,19 +121,21 @@ export default function Filter({
             <InputError message={form.errors.filters} className="mt-2" />
           </div>
 
-          <div className="mt-4">
-            <InputLabel htmlFor="employee">Employee</InputLabel>
+          {getUserRole() === 'manager' && (
+            <div className="mt-4">
+              <InputLabel htmlFor="employee">Employee</InputLabel>
 
-            <Autocomplete
-              placeholder="Type a employee name"
-              suggestions={data.employees}
-              selectedId={selectedEmployee[0]?.id || Number.MIN_SAFE_INTEGER}
-              onAutocompleteChange={handleAutocompleteChange}
-              defaultInputValue={selectedEmployee[0]?.value || ''}
-            />
+              <Autocomplete
+                placeholder="Type a employee name"
+                suggestions={data.employees}
+                selectedId={selectedEmployee[0]?.id || Number.MIN_SAFE_INTEGER}
+                onAutocompleteChange={handleAutocompleteChange}
+                defaultInputValue={selectedEmployee[0]?.value || ''}
+              />
 
-            <InputError message={form.errors.filters} className="mt-2" />
-          </div>
+              <InputError message={form.errors.filters} className="mt-2" />
+            </div>
+          )}
         </DialogModal.Content>
         <DialogModal.Footer>
           <SecondaryButton type="button" onClick={handleCancel}>
