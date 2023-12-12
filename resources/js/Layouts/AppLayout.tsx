@@ -12,6 +12,7 @@ import NavLink from '@/Components/NavLink';
 import ResponsiveNavLink from '@/Components/ResponsiveNavLink';
 import { Auth, Team } from '@/types';
 import { upperFirst } from 'lodash';
+import Logo from '../../img/Logo.png';
 
 interface Props {
   title: string;
@@ -66,7 +67,8 @@ export default function AppLayout({
                 {/* <!-- Logo --> */}
                 <div className="flex-shrink-0 flex items-center">
                   <Link href={route('dashboard')}>
-                    <ApplicationMark className="block h-9 w-auto" />
+                    <img src={Logo} className="mt-2 bg-white h-9 w-16 block" />
+                    {/* <ApplicationMark className="block h-9 w-auto" /> */}
                   </Link>
                 </div>
 

@@ -1,6 +1,6 @@
 import Alert from '@/Components/Alert';
 import useRoute from '@/Hooks/useRoute';
-import EditEmployee from '@/Pages/Employees/EditEmployee';
+import Edit from '@/Pages/Employees/Edit';
 import { Link } from '@inertiajs/react';
 import React, { useState } from 'react';
 
@@ -43,7 +43,7 @@ const Action = ({ id, row, value }: Props) => {
           </svg>
           <span>Edit</span>
         </button>
-        <button
+        {/* <button
           data-user-id={id}
           className="edit-user-button inline-flex me-4 border bg-red-400 text-white px-4 py-2 text-xs rounded-md"
         >
@@ -62,12 +62,14 @@ const Action = ({ id, row, value }: Props) => {
             />
           </svg>
           <span>Delete</span>
-        </button>
+        </button> */}
       </div>
 
-      <Alert on={isEditSuccess}>Employee Edited Successfully</Alert>
+      <Alert on={isEditSuccess} setOn={setIsEditSuccess}>
+        Employee Edited Successfully
+      </Alert>
 
-      <EditEmployee
+      <Edit
         data={row}
         isOpenModal={openEditModal}
         setIsOpenModal={setOpenEditModal}

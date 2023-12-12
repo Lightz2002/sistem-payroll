@@ -30,13 +30,16 @@ class EmployeeController extends Controller
         $sortDirection = request()->sortDirection ?? 'asc';
         $page = ((is_nan(request()->page) || !request()->page) ? 1 : request()->page);
 
+
         return Inertia::render("Employees/Index", [
-            'search' => $search,
-            'sortBy' => $sortBy,
-            'sortDirection' => $sortDirection,
-            'page' => $page,
+            'tableForm' => [
+                'search' => $search,
+                'sortBy' => $sortBy,
+                'sortDirection' => $sortDirection,
+                'page' => $page,
+            ],
             'dataRoute' => 'employee',
-            'datas' => User::filter($search)->orderBy($sortBy, $sortDirection)->paginate(5),
+            'datas' => User::filter($search)->orderBy($sortBy, $sortDirection)->paginate(10),
             'columnDatas' => [
                 ['key' => 'name', 'label' => 'name'],
                 ['key' => 'email', 'label' => 'email'],
@@ -67,6 +70,7 @@ class EmployeeController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
+            'identity_no' => $request->identity_no,
         ]);
 
         $role = Role::firstWhere('id', $request->role);
@@ -103,7 +107,14 @@ class EmployeeController extends Controller
         $employee->name = $request->name;
         $employee->email = $request->email;
 
-        $employee->assignRole($request->role);
+        $prevRole = $employee->roles[0];
+        $newRole = $request->role;
+
+        if ($newRole !== $prevRole->name) {
+            $employee->removeRole($prevRole);
+        }
+
+        $employee->assignRole($newRole);
 
         $employee->save();
 
@@ -116,6 +127,12 @@ class EmployeeController extends Controller
     public function destroy(string $id)
     {
         //
+    }
+
+    public function getEmployeeAutocomplete()
+    {
+        $user = User::selectRaw('id, name as value')->get();
+        return response()->json($user);
     }
 
     /**

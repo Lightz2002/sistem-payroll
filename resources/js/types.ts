@@ -1,3 +1,5 @@
+import { FormDataConvertible } from '@inertiajs/core';
+
 type DateTime = string;
 
 export type Nullable<T> = T | null;
@@ -19,6 +21,7 @@ export interface User {
   id: number;
   name: string;
   email: string;
+  identity_no: string;
   current_team_id: Nullable<number>;
   profile_photo_path: Nullable<string>;
   profile_photo_url: string;
@@ -26,7 +29,7 @@ export interface User {
   email_verified_at: Nullable<DateTime>;
   created_at: DateTime;
   updated_at: DateTime;
-  roles: string;
+  roles: Role[] | string;
   menus: string[];
   // permissions: string[];
 }
@@ -136,4 +139,57 @@ export interface PaginationType<Data extends Collection> {
   total: number;
 }
 
-// export type OpenModalFormHandle = () => void;
+export interface TableForm<Data = undefined> {
+  search: string;
+  sortBy: string;
+  sortDirection: string;
+  page: number;
+  filters?: Data;
+}
+
+export interface Salary extends Collection {
+  date: string;
+  employee: string;
+  employee_id: number;
+  total_amount: number;
+  salary_per_day: number;
+  total_salary_bonus: number;
+  total_salary_deduction: number;
+  salary_deductions: PaginationType<SalaryDeductionOrBonus>;
+  salary_bonus: PaginationType<SalaryDeductionOrBonus>;
+  status: string;
+  absence: PaginationType<Absence>;
+}
+
+export interface SalaryForm extends Collection {
+  id: number;
+  date: string;
+  employee: string;
+  total_amount: number;
+  salary_per_day: number;
+  status: string;
+}
+
+export interface SalaryDeductionOrBonus extends Collection {
+  name: string;
+  amount: number;
+}
+
+export interface Absence extends Collection {
+  type: string;
+  date: string;
+  employee: string;
+}
+
+export interface DashboardType {
+  total_paid_salary_all_time: number;
+  total_paid_employee: number;
+  total_employee_not_coming_today: number;
+  total_paid_salary_last_month: number;
+  total_paid_salary_this_month: number;
+  total_present: number;
+  total_sick: number;
+  total_permission: number;
+  total_salary_this_month: number;
+  total_salary_last_month: number;
+}

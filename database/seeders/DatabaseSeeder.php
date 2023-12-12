@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+
+use App\Models\Salary;
+use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -18,6 +21,18 @@ class DatabaseSeeder extends Seeder
             MenuSeeder::class,
             RoleMenuSeeder::class,
         ]);
+
+        // Salary::factory(5)
+        //     ->for(User::factory()->state([
+        //         'name' => 'admin1',
+        //     ]))
+        //     ->create();
+
+        // Salary::factory(5)
+        //     ->for(User::factory()->state([
+        //         'name' => 'employee1',
+        //     ]))
+        //     ->create();
         // \App\Models\User::factory(10)->create();
 
         // \App\Models\User::factory()->create([
