@@ -52,7 +52,7 @@
 </head>
 <body>
   <div id="header" class="text-center">
-    <img width="100" height="100" src="{{ url('storage/images/Logo.png') }}" alt="">
+    <img width="100" height="100" src="{{ public_path('storage/images/Logo.jpg') }}" alt="">
       <h1>
         Toko Multi Bintan
       </h1>

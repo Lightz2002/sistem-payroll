@@ -89,6 +89,8 @@ class SalaryController extends Controller
             $salary->save();
 
             $this->salaryService->calculateTotalAmount($salary);;
+
+            $this->salaryService->updateAbsenceSalaryByDate($salary);
         });
 
         return Redirect::to('/salary');
@@ -179,6 +181,8 @@ class SalaryController extends Controller
 
         DB::transaction(function () use ($request, $salary) {
 
+            $this->salaryService->updatePreviousSalaryAbsence($salary);
+
             $salary->salary_per_day = $request->salary_per_day;
             $salary->date = $request->date;
             $salary->employee_id = $request->employee;
@@ -186,12 +190,15 @@ class SalaryController extends Controller
             $salary->total_amount = 0;
             $salary->save();
 
+            $this->salaryService->updateAbsenceSalaryByDate($salary);
+
             $this->salaryService->calculateTotalAmount($salary);
         });
     }
 
     public function destroy(Salary $salary)
     {
+        $this->salaryService->updatePreviousSalaryAbsence($salary);
         $salary->delete();
     }
 
