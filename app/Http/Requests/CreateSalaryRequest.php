@@ -43,7 +43,6 @@ class CreateSalaryRequest extends FormRequest
                     }
                 },
             ],
-            'salary_per_day' => ['required', 'numeric'],
             'employee' => ['required', Rule::exists(User::class, 'id')]
         ];
     }

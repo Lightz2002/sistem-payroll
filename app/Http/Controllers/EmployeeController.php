@@ -6,6 +6,7 @@ use App\Http\Requests\CreateEmployeeRequest;
 use App\Http\Requests\UpdateEmployeeRequest;
 use App\Models\User;
 use App\Services\RoleService;
+use App\Services\SalaryService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Redirect;
@@ -15,10 +16,13 @@ use Spatie\Permission\Models\Role;
 class EmployeeController extends Controller
 {
     protected $roleService;
+    protected $salaryService;
+
 
     public function __construct()
     {
         $this->roleService = new RoleService();
+        $this->salaryService = new SalaryService();
     }
     /**
      * Display a listing of the resource.
@@ -106,6 +110,12 @@ class EmployeeController extends Controller
 
         $employee->name = $request->name;
         $employee->email = $request->email;
+        $employee->identity_no = $request->identity_no;
+        $employee->salary_note = $request->salary_note;
+        $employee->salary_per_day = $request->salary_per_day;
+
+
+        // update salary yg usernya ini
 
         $prevRole = $employee->roles[0];
         $newRole = $request->role;
@@ -117,6 +127,8 @@ class EmployeeController extends Controller
         $employee->assignRole($newRole);
 
         $employee->save();
+
+        $this->salaryService->updateUserSalaryPerDayAndNote($employee);
 
         return redirect()->route('employee');
     }

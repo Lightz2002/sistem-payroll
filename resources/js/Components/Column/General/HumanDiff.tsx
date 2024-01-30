@@ -6,7 +6,7 @@ interface Props {
 }
 
 const HumanDiff = ({ value }: Props) => {
-  return <div>{moment(value).fromNow()}</div>;
+  return <div>{moment(value).format('DD-MMM-YYYY, h:mm:ss a')}</div>;
 };
 
 export default HumanDiff;

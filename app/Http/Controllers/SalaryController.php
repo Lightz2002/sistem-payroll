@@ -38,7 +38,7 @@ class SalaryController extends Controller
         $dateUntil = request()->filters['dateUntil'] ?? '';
         $employee = request()->filters['employee'] ?? '';
         $sortBy = request()->sortBy ?? 'created_at';
-        $sortDirection = request()->sortDirection ?? 'asc';
+        $sortDirection = request()->sortDirection ?? 'desc';
         $page = ((is_nan(request()->page) || !request()->page) ? 1 : request()->page);
 
 
@@ -80,8 +80,11 @@ class SalaryController extends Controller
         $request->validated();
 
         DB::transaction(function () use ($request) {
+            $selectedEmployee = User::where('id', $request->employee)->first();
+
             $salary = new Salary();
-            $salary->salary_per_day = $request->salary_per_day;
+            $salary->salary_per_day = $selectedEmployee->salary_per_day;
+            $salary->salary_note = $selectedEmployee->salary_note;
             $salary->date = $request->date;
             $salary->employee_id = $request->employee;
             $salary->status = 'entry';
@@ -321,6 +324,12 @@ class SalaryController extends Controller
 
     public function printEmployeeSalary(Salary $salary)
     {
+        // tambahin utk gaji per hari * absen yg present
+        $absences = $this->salaryService->getAbsenceBySalary($salary);
+        $presentAbsences = $absences->where('type', 'present')->get()->count();
+
+        $salary->total_absence_salary = $salary->salary_per_day * $presentAbsences;
+
         $salary->total_salary_bonus = $salary->salary_bonus->sum('amount');
         $salary->total_salary_deduction = $salary->salary_deductions->sum('amount');
 

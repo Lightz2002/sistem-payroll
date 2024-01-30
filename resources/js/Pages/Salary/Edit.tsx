@@ -53,7 +53,6 @@ const Edit = ({
   const form = useForm({
     id: data.id,
     date: moment(data.date).format('YYYY-MM'),
-    salary_per_day: data.salary_per_day,
     employee: data.employee_id,
     type: data.type,
     status: data.status.toLowerCase(),
@@ -110,25 +109,6 @@ const Edit = ({
               />
 
               <InputError message={form.errors.date} className="mt-2" />
-            </div>
-
-            <div className="mt-4">
-              <InputLabel htmlFor="salary_per_day">Salary Per Day</InputLabel>
-
-              <TextInput
-                type="text"
-                className="mt-1 block w-3/4"
-                placeholder="salary_per_day"
-                value={form.data.salary_per_day}
-                onChange={e =>
-                  form.setData('salary_per_day', +e.currentTarget.value)
-                }
-              />
-
-              <InputError
-                message={form.errors.salary_per_day}
-                className="mt-2"
-              />
             </div>
 
             <div className="mt-4">

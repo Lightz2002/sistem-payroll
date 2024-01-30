@@ -221,6 +221,10 @@ export default function Show({
                     <h3 className="font-bold text-lg">Status</h3>
                     <h3 className="text-md">{datas.status}</h3>
                   </div>
+                  <div>
+                    <h3 className="font-bold text-lg">Note</h3>
+                    <h3 className="text-md">{datas.salary_note}</h3>
+                  </div>
                 </div>
               </Tab.Panel>
               <Tab.Panel key="Bonus">

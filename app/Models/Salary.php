@@ -105,4 +105,14 @@ class Salary extends Model
                     ->orWhere('child.amount', 'like', '%' . $search . '%');
             });
     }
+
+    public function scopePosted($query)
+    {
+        return $query->where('status', 'posted');
+    }
+
+    public function scopeEntry($query)
+    {
+        return $query->where('status', 'entry');
+    }
 }

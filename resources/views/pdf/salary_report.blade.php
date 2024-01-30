@@ -128,11 +128,39 @@
           Rp {{ number_format($datas->sum('total_amount'), 2, ',', '.') }}
         </td>
       </tr>
+
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td class="text-right">
+          <br>
+          <br>
+          Mengetahui
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          <br>
+          Direktur
+          <br>
+          {{ ucwords(auth()->user()->name) }}
+        </td>
+      </tr>
     </table>
-    {{-- <p style="page-break-before: always;">the second page</p> --}}
   </div>
-  <div id="footer">
-    
-  </div>
+  {{-- <div id="footer">
+    <br>
+    <br>
+
+    <p>Mengetahui</p>
+      <br>
+      <br>
+      <br>
+      <p>Direktur</p>
+      <p>{{ ucwords(auth()->user()->name) }}</p>
+  </div> --}}
 </body>
 </html>

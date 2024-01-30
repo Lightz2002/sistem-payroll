@@ -44,7 +44,6 @@ class UpdateSalaryRequest extends FormRequest
                     }
                 },
             ],
-            'salary_per_day' => ['required', 'numeric'],
             'status' => ['required', function (string $attribute, mixed $value, Closure $fail) {
                 if (!in_array($value, ['entry', 'posted'])) {
                     $fail("The {$attribute} is not valid");

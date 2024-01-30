@@ -31,7 +31,8 @@ class UpdateEmployeeRequest extends FormRequest
             'name' => ['string', 'max:255', 'required'],
             'email' => ['email', 'max:255', 'required', Rule::unique(User::class)->ignore($userId)],
             'role' => ['required', Rule::exists(Role::class, 'id')],
-            'identity_no' => ['string', 'max:255', 'nullable']
+            'identity_no' => ['string', 'max:255', 'nullable'],
+            'salary_note' => ['string', 'max:255', 'nullable']
         ];
     }
 }

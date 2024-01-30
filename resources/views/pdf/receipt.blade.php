@@ -46,7 +46,7 @@
 </head>
 <body>
   <div id="header" class="text-center">
-    <img width="100" height="100" src="{{ url('storage/images/Logo.png') }}" alt="">
+    <img width="100" height="100" src="{{ url('storage/images/Logo.jpg') }}" alt="">
       <h1>
         Toko Multi Bintan
       </h1>
@@ -79,6 +79,10 @@
           <td>Status</td>
           <td width="70%">: Karyawan Tetap</td>
         </tr>
+        <tr>
+          <td>Tanggal</td>
+          <td width="70%">: {{ today()->format('d-M-Y') }}</td>
+        </tr>
       </table>
     </div>
 
@@ -87,7 +91,7 @@
           <tr><th colspan="2" class="salary-header">Penghasilan</th></tr>
           <tr>
             <td width="50%">Gaji Pokok</td>
-            <td width="50%" class="text-right">{{ number_format($data->total_amount - $data->total_salary_bonus - $data->total_salary_deduction, 2, ',', '.') }}</td>
+            <td width="50%" class="text-right">{{ number_format($data->total_absence_salary, 2, ',', '.') }}</td>
           </tr>
 
           @foreach ($data->salary_bonus as $bonus)
@@ -99,7 +103,7 @@
 
           <tr>
             <td width="50%" class="font-bold">Total Penghasilan</td>
-            <td width="50%" class="text-right">{{ number_format($data->total_amount - $data->total_salary_deduction ,2, ',', '.') }}</td>
+            <td width="50%" class="text-right">{{ number_format($data->total_absence_salary + $data->total_salary_bonus ,2, ',', '.') }}</td>
           </tr>
 
         </table>

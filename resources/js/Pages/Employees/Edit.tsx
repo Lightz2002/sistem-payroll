@@ -11,6 +11,7 @@ import classNames from 'classnames';
 import React, { PropsWithChildren, useEffect, useState } from 'react';
 import { User } from '@/types';
 import axios from 'axios';
+import TextArea from '@/Components/TextArea';
 
 interface Props {
   title?: string;
@@ -69,6 +70,8 @@ const Edit = ({
     identity_no: data.identity_no,
     processing: false,
     terms: false,
+    salary_note: data.salary_note,
+    salary_per_day: data.salary_per_day,
   });
 
   const handleAutocompleteChange = (id: number, value: string) => {
@@ -151,6 +154,40 @@ const Edit = ({
               />
 
               <InputError message={form.errors.identity_no} className="mt-2" />
+            </div>
+
+            <div className="mt-4">
+              <InputLabel htmlFor="salary_per_day">Salary Per Day</InputLabel>
+
+              <TextInput
+                type="text"
+                className="mt-1 block w-3/4"
+                placeholder="Salary Per Day"
+                value={form.data.salary_per_day}
+                onChange={e =>
+                  form.setData('salary_per_day', +e.currentTarget.value)
+                }
+              />
+
+              <InputError
+                message={form.errors.salary_per_day}
+                className="mt-2"
+              />
+            </div>
+
+            <div className="mt-4">
+              <InputLabel htmlFor="salary_note">Salary Note</InputLabel>
+
+              <TextArea
+                className="mt-1 block w-3/4"
+                placeholder="Note"
+                value={form.data.salary_note}
+                onChange={e =>
+                  form.setData('salary_note', e.currentTarget.value)
+                }
+              />
+
+              <InputError message={form.errors.salary_note} className="mt-2" />
             </div>
           </DialogModal.Content>
           <DialogModal.Footer>

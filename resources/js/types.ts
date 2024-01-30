@@ -31,6 +31,8 @@ export interface User {
   updated_at: DateTime;
   roles: Role[] | string;
   menus: string[];
+  salary_note: string;
+  salary_per_day: number;
   // permissions: string[];
 }
 
@@ -159,6 +161,7 @@ export interface Salary extends Collection {
   salary_bonus: PaginationType<SalaryDeductionOrBonus>;
   status: string;
   absence: PaginationType<Absence>;
+  salary_note: string;
 }
 
 export interface SalaryForm extends Collection {
